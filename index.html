@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="sk">
+  <head>
+    <meta charset="utf-8" />
+    <title>Hypotekárna kalkulačka</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <div class="eyebrow">Splátkový kalkulátor</div>
+        <h1>Koľko bude stáť vaša hypotéka</h1>
+        <p class="sub">
+          Zadajte cenu nehnuteľnosti, vlastné zdroje, úrok a dobu splácania — kalkulačka spočíta
+          mesačnú splátku aj celkovú preplatenosť úveru.
+        </p>
+      </header>
+
+      <div class="grid">
+        <form class="card" id="form" novalidate>
+          <h2>Parametre úveru</h2>
+
+          <div class="field">
+            <label for="price">Cena nehnuteľnosti</label>
+            <div class="input-shell">
+              <input
+                type="number"
+                id="price"
+                inputmode="decimal"
+                min="0"
+                step="1000"
+                value="250000"
+              />
+              <span class="unit">€</span>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="dpPct">Vlastné zdroje (akontácia)</label>
+            <div class="dp-pair">
+              <div class="input-shell">
+                <input
+                  type="number"
+                  id="dpAmount"
+                  inputmode="decimal"
+                  min="0"
+                  step="500"
+                  value="50000"
+                />
+                <span class="unit">€</span>
+              </div>
+              <div class="input-shell">
+                <input
+                  type="number"
+                  id="dpPct"
+                  inputmode="decimal"
+                  min="0"
+                  max="100"
+                  step="0.5"
+                  value="20"
+                />
+                <span class="unit">%</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="rate">Ročná úroková sadzba</label>
+            <div class="input-shell">
+              <input
+                type="number"
+                id="rate"
+                inputmode="decimal"
+                min="0"
+                max="25"
+                step="0.01"
+                value="4.5"
+              />
+              <span class="unit">%</span>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="years">Doba splácania</label>
+            <div class="input-shell">
+              <input
+                type="number"
+                id="years"
+                inputmode="numeric"
+                min="1"
+                max="40"
+                step="1"
+                value="25"
+              />
+              <span class="unit">rokov</span>
+            </div>
+            <div class="term-presets" id="presets">
+              <button type="button" data-years="15">15</button>
+              <button type="button" data-years="20">20</button>
+              <button type="button" data-years="25" aria-pressed="true">25</button>
+              <button type="button" data-years="30">30</button>
+            </div>
+          </div>
+
+          <button type="submit" class="calc-btn">Vypočítať splátku</button>
+          <div class="err" id="err" role="alert"></div>
+        </form>
+
+        <section class="card" aria-live="polite">
+          <div class="results-head">
+            <h2>Výsledok</h2>
+            <span class="sample-tag" id="sampleTag">ukážka</span>
+          </div>
+
+          <div class="headline">
+            <span class="value" id="monthlyPayment">—</span>
+            <span class="per-month">/ mesiac</span>
+          </div>
+
+          <div class="chart-row">
+            <div class="donut-wrap">
+              <svg
+                width="168"
+                height="168"
+                viewBox="0 0 168 168"
+                role="img"
+                aria-labelledby="donutTitle"
+              >
+                <title id="donutTitle">Podiel istiny a úrokov na celkovej splátke</title>
+                <circle
+                  cx="84"
+                  cy="84"
+                  r="66"
+                  fill="none"
+                  stroke="var(--grid-line)"
+                  stroke-width="24"
+                ></circle>
+                <circle
+                  id="arcInterest"
+                  cx="84"
+                  cy="84"
+                  r="66"
+                  fill="none"
+                  stroke="var(--teal)"
+                  stroke-width="24"
+                  stroke-dasharray="0 999"
+                  transform="rotate(-90 84 84)"
+                ></circle>
+                <circle
+                  id="arcPrincipal"
+                  cx="84"
+                  cy="84"
+                  r="66"
+                  fill="none"
+                  stroke="var(--accent)"
+                  stroke-width="24"
+                  stroke-dasharray="0 999"
+                  transform="rotate(-90 84 84)"
+                ></circle>
+                <text
+                  x="84"
+                  y="80"
+                  text-anchor="middle"
+                  font-family="IBM Plex Mono, monospace"
+                  font-size="12"
+                  fill="var(--ink-faint)"
+                >
+                  istina
+                </text>
+                <text
+                  x="84"
+                  y="98"
+                  text-anchor="middle"
+                  font-family="IBM Plex Mono, monospace"
+                  font-size="15"
+                  fill="var(--ink)"
+                  id="donutPct"
+                >
+                  —
+                </text>
+              </svg>
+            </div>
+
+            <div class="legend">
+              <div class="legend-row">
+                <span class="legend-label"
+                  ><span class="swatch" style="background: var(--accent)"></span>Istina (úver)</span
+                >
+                <span class="legend-value" id="legendPrincipal">—</span>
+              </div>
+              <div class="legend-row">
+                <span class="legend-label"
+                  ><span class="swatch" style="background: var(--teal)"></span>Úroky spolu</span
+                >
+                <span class="legend-value" id="legendInterest">—</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="stat-strip">
+            <div class="stat">
+              <div class="k">Výška úveru</div>
+              <div class="v" id="statLoan">—</div>
+            </div>
+            <div class="stat">
+              <div class="k">Celkovo zaplatené</div>
+              <div class="v" id="statTotal">—</div>
+            </div>
+            <div class="stat">
+              <div class="k">Počet splátok</div>
+              <div class="v" id="statCount">—</div>
+            </div>
+            <div class="stat">
+              <div class="k">Preplatenosť</div>
+              <div class="v" id="statOverpay">—</div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <footer>
+        Orientačný výpočet anuitnej splátky (istina + úrok). Nezohľadňuje poistenie, poplatky ani
+        dane.
+      </footer>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

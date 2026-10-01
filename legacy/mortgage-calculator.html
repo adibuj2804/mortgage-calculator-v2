@@ -1,0 +1,634 @@
+<title>Hypotekárna kalkulačka</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #eef1f5;
+    --card: #ffffff;
+    --grid-line: #d7dee6;
+    --ink: #182531;
+    --ink-soft: #57687a;
+    --ink-faint: #8b9aa8;
+    --accent: #b6621f;
+    --accent-soft: #f0dcc8;
+    --teal: #2f7d6d;
+    --teal-soft: #d9ebe6;
+    --danger: #b3432f;
+    --focus: #2f6fb0;
+    --shadow: 0 1px 2px rgba(24,37,49,0.06), 0 8px 24px rgba(24,37,49,0.06);
+    color-scheme: light;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #10161d;
+      --card: #161f28;
+      --grid-line: #223040;
+      --ink: #e8edf1;
+      --ink-soft: #9fb0bd;
+      --ink-faint: #6d7f8d;
+      --accent: #e08a4c;
+      --accent-soft: #3a2c1c;
+      --teal: #4fa392;
+      --teal-soft: #17302b;
+      --danger: #e08772;
+      --focus: #6fa8dc;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
+      color-scheme: dark;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --paper: #10161d;
+    --card: #161f28;
+    --grid-line: #223040;
+    --ink: #e8edf1;
+    --ink-soft: #9fb0bd;
+    --ink-faint: #6d7f8d;
+    --accent: #e08a4c;
+    --accent-soft: #3a2c1c;
+    --teal: #4fa392;
+    --teal-soft: #17302b;
+    --danger: #e08772;
+    --focus: #6fa8dc;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background:
+      linear-gradient(var(--grid-line) 1px, transparent 1px) 0 0 / 100% 28px,
+      var(--paper);
+    color: var(--ink);
+    font-family: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+    padding: clamp(20px, 4vw, 48px) 16px 48px;
+    min-height: 100%;
+  }
+
+  .wrap {
+    max-width: 980px;
+    margin: 0 auto;
+  }
+
+  header {
+    margin-bottom: 28px;
+  }
+
+  .eyebrow {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .eyebrow::before {
+    content: "";
+    width: 18px;
+    height: 2px;
+    background: var(--accent);
+    display: inline-block;
+  }
+
+  h1 {
+    font-family: "Fraunces", ui-serif, Georgia, serif;
+    font-weight: 500;
+    font-size: clamp(28px, 4vw, 40px);
+    margin: 8px 0 6px;
+    text-wrap: balance;
+    letter-spacing: -0.01em;
+  }
+
+  .sub {
+    color: var(--ink-soft);
+    font-size: 15px;
+    max-width: 56ch;
+    text-wrap: balance;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+    gap: 20px;
+    align-items: start;
+  }
+
+  @media (max-width: 760px) {
+    .grid { grid-template-columns: 1fr; }
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--grid-line);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    padding: 24px;
+  }
+
+  .card h2 {
+    font-family: "Fraunces", serif;
+    font-weight: 500;
+    font-size: 19px;
+    margin: 0 0 18px;
+  }
+
+  .field {
+    margin-bottom: 18px;
+  }
+
+  .field:last-of-type { margin-bottom: 0; }
+
+  .field label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink-soft);
+    margin-bottom: 6px;
+  }
+
+  .input-row {
+    display: flex;
+    gap: 10px;
+  }
+
+  .input-shell {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .input-shell .unit {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 13px;
+    color: var(--ink-faint);
+    pointer-events: none;
+  }
+
+  input[type="number"] {
+    width: 100%;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 15px;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
+    background: var(--paper);
+    border: 1px solid var(--grid-line);
+    border-radius: 8px;
+    padding: 10px 34px 10px 12px;
+    appearance: textfield;
+  }
+
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button {
+    appearance: none;
+    margin: 0;
+  }
+
+  input[type="number"]:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 1px;
+  }
+
+  .dp-pair {
+    display: grid;
+    grid-template-columns: 1fr 92px;
+    gap: 8px;
+  }
+
+  .term-presets {
+    display: flex;
+    gap: 6px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+  }
+
+  .term-presets button {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px;
+    border: 1px solid var(--grid-line);
+    background: var(--paper);
+    color: var(--ink-soft);
+    border-radius: 999px;
+    padding: 4px 11px;
+    cursor: pointer;
+  }
+
+  .term-presets button:hover { border-color: var(--accent); color: var(--accent); }
+  .term-presets button:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+  .term-presets button[aria-pressed="true"] {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .calc-btn {
+    width: 100%;
+    margin-top: 22px;
+    padding: 13px 16px;
+    font-family: "IBM Plex Sans", sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    color: #fff;
+    background: var(--accent);
+    border: none;
+    border-radius: 9px;
+    cursor: pointer;
+    transition: filter 0.15s ease;
+  }
+
+  .calc-btn:hover { filter: brightness(1.08); }
+  .calc-btn:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+  .err {
+    color: var(--danger);
+    font-size: 12.5px;
+    margin-top: 10px;
+    min-height: 1em;
+  }
+
+  .results-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 4px;
+  }
+
+  .results-head h2 { margin: 0; }
+
+  .sample-tag {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    border: 1px solid var(--grid-line);
+    border-radius: 999px;
+    padding: 2px 9px;
+  }
+
+  .headline {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin: 14px 0 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--grid-line);
+  }
+
+  .headline .value {
+    font-family: "Fraunces", serif;
+    font-weight: 500;
+    font-size: clamp(32px, 5vw, 44px);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
+  }
+
+  .headline .per-month {
+    color: var(--ink-soft);
+    font-size: 14px;
+  }
+
+  .chart-row {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .donut-wrap { flex: 0 0 auto; }
+
+  .legend {
+    flex: 1;
+    min-width: 180px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .legend-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px dashed var(--grid-line);
+  }
+
+  .legend-row:last-child { border-bottom: none; }
+
+  .legend-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13.5px;
+    color: var(--ink-soft);
+  }
+
+  .swatch {
+    width: 10px;
+    height: 10px;
+    border-radius: 3px;
+    flex: none;
+  }
+
+  .legend-value {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 14px;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
+  }
+
+  .stat-strip {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--grid-line);
+  }
+
+  .stat {
+    background: var(--paper);
+    border: 1px solid var(--grid-line);
+    border-radius: 10px;
+    padding: 12px 14px;
+  }
+
+  .stat .k {
+    font-size: 11.5px;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 4px;
+  }
+
+  .stat .v {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 15px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  footer {
+    margin-top: 28px;
+    color: var(--ink-faint);
+    font-size: 12.5px;
+    text-align: center;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Splátkový kalkulátor</div>
+    <h1>Koľko bude stáť vaša hypotéka</h1>
+    <p class="sub">Zadajte cenu nehnuteľnosti, vlastné zdroje, úrok a dobu splácania — kalkulačka spočíta mesačnú splátku aj celkovú preplatenosť úveru.</p>
+  </header>
+
+  <div class="grid">
+    <form class="card" id="form" novalidate>
+      <h2>Parametre úveru</h2>
+
+      <div class="field">
+        <label for="price">Cena nehnuteľnosti</label>
+        <div class="input-shell">
+          <input type="number" id="price" inputmode="decimal" min="0" step="1000" value="250000">
+          <span class="unit">€</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="dpPct">Vlastné zdroje (akontácia)</label>
+        <div class="dp-pair">
+          <div class="input-shell">
+            <input type="number" id="dpAmount" inputmode="decimal" min="0" step="500" value="50000">
+            <span class="unit">€</span>
+          </div>
+          <div class="input-shell">
+            <input type="number" id="dpPct" inputmode="decimal" min="0" max="100" step="0.5" value="20">
+            <span class="unit">%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="rate">Ročná úroková sadzba</label>
+        <div class="input-shell">
+          <input type="number" id="rate" inputmode="decimal" min="0" max="25" step="0.01" value="4.5">
+          <span class="unit">%</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="years">Doba splácania</label>
+        <div class="input-shell">
+          <input type="number" id="years" inputmode="numeric" min="1" max="40" step="1" value="25">
+          <span class="unit">rokov</span>
+        </div>
+        <div class="term-presets" id="presets">
+          <button type="button" data-years="15">15</button>
+          <button type="button" data-years="20">20</button>
+          <button type="button" data-years="25" aria-pressed="true">25</button>
+          <button type="button" data-years="30">30</button>
+        </div>
+      </div>
+
+      <button type="submit" class="calc-btn">Vypočítať splátku</button>
+      <div class="err" id="err" role="alert"></div>
+    </form>
+
+    <section class="card" aria-live="polite">
+      <div class="results-head">
+        <h2>Výsledok</h2>
+        <span class="sample-tag" id="sampleTag">ukážka</span>
+      </div>
+
+      <div class="headline">
+        <span class="value" id="monthlyPayment">—</span>
+        <span class="per-month">/ mesiac</span>
+      </div>
+
+      <div class="chart-row">
+        <div class="donut-wrap">
+          <svg width="168" height="168" viewBox="0 0 168 168" role="img" aria-labelledby="donutTitle">
+            <title id="donutTitle">Podiel istiny a úrokov na celkovej splátke</title>
+            <circle cx="84" cy="84" r="66" fill="none" stroke="var(--grid-line)" stroke-width="24"></circle>
+            <circle id="arcInterest" cx="84" cy="84" r="66" fill="none" stroke="var(--teal)" stroke-width="24" stroke-dasharray="0 999" transform="rotate(-90 84 84)"></circle>
+            <circle id="arcPrincipal" cx="84" cy="84" r="66" fill="none" stroke="var(--accent)" stroke-width="24" stroke-dasharray="0 999" transform="rotate(-90 84 84)"></circle>
+            <text x="84" y="80" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" fill="var(--ink-faint)">istina</text>
+            <text x="84" y="98" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="15" fill="var(--ink)" id="donutPct">—</text>
+          </svg>
+        </div>
+
+        <div class="legend">
+          <div class="legend-row">
+            <span class="legend-label"><span class="swatch" style="background:var(--accent)"></span>Istina (úver)</span>
+            <span class="legend-value" id="legendPrincipal">—</span>
+          </div>
+          <div class="legend-row">
+            <span class="legend-label"><span class="swatch" style="background:var(--teal)"></span>Úroky spolu</span>
+            <span class="legend-value" id="legendInterest">—</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="stat-strip">
+        <div class="stat">
+          <div class="k">Výška úveru</div>
+          <div class="v" id="statLoan">—</div>
+        </div>
+        <div class="stat">
+          <div class="k">Celkovo zaplatené</div>
+          <div class="v" id="statTotal">—</div>
+        </div>
+        <div class="stat">
+          <div class="k">Počet splátok</div>
+          <div class="v" id="statCount">—</div>
+        </div>
+        <div class="stat">
+          <div class="k">Preplatenosť</div>
+          <div class="v" id="statOverpay">—</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <footer>Orientačný výpočet anuitnej splátky (istina + úrok). Nezohľadňuje poistenie, poplatky ani dane.</footer>
+</div>
+
+<script>
+(function () {
+  var priceEl = document.getElementById('price');
+  var dpAmountEl = document.getElementById('dpAmount');
+  var dpPctEl = document.getElementById('dpPct');
+  var rateEl = document.getElementById('rate');
+  var yearsEl = document.getElementById('years');
+  var form = document.getElementById('form');
+  var errEl = document.getElementById('err');
+  var sampleTag = document.getElementById('sampleTag');
+  var presetsWrap = document.getElementById('presets');
+
+  var eur = new Intl.NumberFormat('sk-SK', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 });
+  var eurFrac = new Intl.NumberFormat('sk-SK', { style: 'currency', currency: 'EUR', maximumFractionDigits: 2 });
+
+  function clampPct(n) { return Math.min(100, Math.max(0, n)); }
+
+  function syncFromPct() {
+    var price = parseFloat(priceEl.value) || 0;
+    var pct = clampPct(parseFloat(dpPctEl.value) || 0);
+    dpAmountEl.value = Math.round(price * pct / 100);
+  }
+
+  function syncFromAmount() {
+    var price = parseFloat(priceEl.value) || 0;
+    var amount = Math.max(0, parseFloat(dpAmountEl.value) || 0);
+    if (price > 0) {
+      dpPctEl.value = Math.round((amount / price) * 1000) / 10;
+    }
+  }
+
+  dpPctEl.addEventListener('input', syncFromPct);
+  dpAmountEl.addEventListener('input', syncFromAmount);
+  priceEl.addEventListener('input', function () {
+    // price changed: keep the down-payment percentage fixed, recompute the euro amount
+    syncFromPct();
+  });
+
+  presetsWrap.addEventListener('click', function (e) {
+    var btn = e.target.closest('button[data-years]');
+    if (!btn) return;
+    yearsEl.value = btn.getAttribute('data-years');
+    Array.prototype.forEach.call(presetsWrap.querySelectorAll('button'), function (b) {
+      b.setAttribute('aria-pressed', String(b === btn));
+    });
+  });
+
+  yearsEl.addEventListener('input', function () {
+    var v = String(yearsEl.value);
+    Array.prototype.forEach.call(presetsWrap.querySelectorAll('button'), function (b) {
+      b.setAttribute('aria-pressed', String(b.getAttribute('data-years') === v));
+    });
+  });
+
+  function setDonut(principal, interest) {
+    var total = principal + interest;
+    var pPct = total > 0 ? principal / total : 0;
+    var iPct = 1 - pPct;
+    var circumference = 2 * Math.PI * 66;
+
+    var principalArc = document.getElementById('arcPrincipal');
+    var interestArc = document.getElementById('arcInterest');
+
+    principalArc.setAttribute('stroke-dasharray', (circumference * pPct) + ' ' + circumference);
+    interestArc.setAttribute('stroke-dasharray', (circumference * iPct) + ' ' + circumference);
+    interestArc.setAttribute('transform', 'rotate(' + (-90 + pPct * 360) + ' 84 84)');
+
+    document.getElementById('donutPct').textContent = Math.round(pPct * 100) + '%';
+  }
+
+  function calculate(e) {
+    if (e) e.preventDefault();
+    errEl.textContent = '';
+
+    var price = parseFloat(priceEl.value) || 0;
+    var downPayment = Math.max(0, parseFloat(dpAmountEl.value) || 0);
+    var annualRate = Math.max(0, parseFloat(rateEl.value) || 0);
+    var years = Math.max(0, parseFloat(yearsEl.value) || 0);
+
+    var loan = price - downPayment;
+
+    if (price <= 0 || years <= 0) {
+      errEl.textContent = 'Zadajte platnú cenu nehnuteľnosti a dobu splácania.';
+      return;
+    }
+    if (downPayment > price) {
+      errEl.textContent = 'Vlastné zdroje nemôžu prevyšovať cenu nehnuteľnosti.';
+      return;
+    }
+
+    var n = Math.round(years * 12);
+    var r = annualRate / 100 / 12;
+    var monthly;
+
+    if (loan <= 0) {
+      monthly = 0;
+    } else if (r === 0) {
+      monthly = loan / n;
+    } else {
+      monthly = (loan * r) / (1 - Math.pow(1 + r, -n));
+    }
+
+    var totalPaid = monthly * n;
+    var totalInterest = Math.max(0, totalPaid - loan);
+
+    document.getElementById('monthlyPayment').textContent = eurFrac.format(monthly);
+    document.getElementById('legendPrincipal').textContent = eur.format(loan);
+    document.getElementById('legendInterest').textContent = eur.format(totalInterest);
+    document.getElementById('statLoan').textContent = eur.format(loan);
+    document.getElementById('statTotal').textContent = eur.format(totalPaid);
+    document.getElementById('statCount').textContent = n.toLocaleString('sk-SK');
+    document.getElementById('statOverpay').textContent = loan > 0 ? Math.round((totalInterest / loan) * 100) + '%' : '0%';
+
+    setDonut(loan, totalInterest);
+    sampleTag.hidden = true;
+  }
+
+  form.addEventListener('submit', calculate);
+
+  syncFromPct();
+  calculate();
+})();
+</script>

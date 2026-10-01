@@ -6,6 +6,10 @@ versions follow [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
+- `AGENTS.md` / `CLAUDE.md` guide for AI coding agents.
+
 ## [2.0.0]
 
 ### Changed

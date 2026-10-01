@@ -33,6 +33,10 @@ src/
 legacy/       v1 single-file version (v1.0.0), kept for reference
 ```
 
+## For AI agents
+
+Start with [AGENTS.md](AGENTS.md): commands, architecture, conventions and gotchas.
+
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for the branching model and commit conventions, and

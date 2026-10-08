@@ -14,13 +14,47 @@
   <body>
     <div class="wrap">
       <header>
-        <div class="eyebrow">Repayment calculator</div>
-        <h1>How much will your mortgage cost</h1>
+        <div class="eyebrow">Student-friendly mortgage guide</div>
+        <h1>How much will your mortgage really cost?</h1>
         <p class="sub">
-          Enter the property price, down payment, interest rate and term — the calculator works out
-          your monthly payment and the total overpayment on the loan.
+          New to mortgages? Pick a scenario or enter your own numbers. You'll see your monthly
+          payment, whether it fits your income, and how extra payments can save you money.
         </p>
       </header>
+
+      <div class="scenarios" id="scenarios" aria-label="Quick scenarios">
+        <button
+          type="button"
+          data-price="120000"
+          data-dp="10"
+          data-rate="4.2"
+          data-years="30"
+          data-income="1800"
+        >
+          Starter flat
+        </button>
+        <button
+          type="button"
+          data-price="250000"
+          data-dp="20"
+          data-rate="4.5"
+          data-years="25"
+          data-income="3200"
+          aria-pressed="true"
+        >
+          Family home
+        </button>
+        <button
+          type="button"
+          data-price="400000"
+          data-dp="25"
+          data-rate="4"
+          data-years="30"
+          data-income="5000"
+        >
+          Dream house
+        </button>
+      </div>
 
       <div class="grid">
         <form class="card" id="form" novalidate>
@@ -108,19 +142,54 @@
             </div>
           </div>
 
+          <div class="section-title">Can you afford it?</div>
+          <div class="field">
+            <label for="income">Monthly take-home income</label>
+            <div class="input-shell">
+              <input
+                type="number"
+                id="income"
+                inputmode="decimal"
+                min="0"
+                step="100"
+                value="3200"
+              />
+              <span class="unit">€</span>
+            </div>
+            <p class="hint">Banks like the payment to stay under about 30–40% of your income.</p>
+          </div>
+
+          <div class="section-title">Pay it off faster</div>
+          <div class="field">
+            <label for="extra">Extra payment each month</label>
+            <div class="input-shell">
+              <input type="number" id="extra" inputmode="decimal" min="0" step="25" value="0" />
+              <span class="unit">€</span>
+            </div>
+            <p class="hint">Even a small extra amount cuts interest. Try €100!</p>
+          </div>
+
           <button type="submit" class="calc-btn">Calculate payment</button>
           <div class="err" id="err" role="alert"></div>
         </form>
 
-        <section class="card" aria-live="polite">
+        <section class="card" id="results" aria-live="polite">
           <div class="results-head">
             <h2>Result</h2>
-            <span class="sample-tag" id="sampleTag">sample</span>
           </div>
 
           <div class="headline">
             <span class="value" id="monthlyPayment">—</span>
             <span class="per-month">/ month</span>
+          </div>
+
+          <div class="meter" id="meter" hidden>
+            <div class="meter-top">
+              <span>Payment vs. your income</span>
+              <strong id="meterPct">—</strong>
+            </div>
+            <div class="meter-bar"><div class="meter-fill" id="meterFill"></div></div>
+            <div class="meter-verdict" id="meterVerdict"></div>
           </div>
 
           <div class="chart-row">
@@ -147,7 +216,7 @@
                   cy="84"
                   r="66"
                   fill="none"
-                  stroke="var(--teal)"
+                  stroke="var(--plum)"
                   stroke-width="24"
                   stroke-dasharray="0 999"
                   transform="rotate(-90 84 84)"
@@ -197,7 +266,7 @@
               </div>
               <div class="legend-row">
                 <span class="legend-label"
-                  ><span class="swatch" style="background: var(--teal)"></span>Total interest</span
+                  ><span class="swatch" style="background: var(--plum)"></span>Total interest</span
                 >
                 <span class="legend-value" id="legendInterest">—</span>
               </div>
@@ -220,6 +289,85 @@
             <div class="stat">
               <div class="k">Overpayment</div>
               <div class="v" id="statOverpay">—</div>
+            </div>
+          </div>
+
+          <div class="savings" id="savings" hidden></div>
+        </section>
+
+        <section class="card span" aria-labelledby="balanceTitle">
+          <h2 id="balanceTitle">How your debt shrinks over time</h2>
+          <div class="chart-box" id="balanceChart"></div>
+          <div class="chart-legend">
+            <span><i class="swatch" style="background: var(--plum)"></i>Standard payments</span>
+            <span id="legendExtra" hidden
+              ><i class="swatch" style="background: var(--accent)"></i>With extra payment</span
+            >
+          </div>
+          <details>
+            <summary>Year-by-year breakdown</summary>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Year</th>
+                    <th>Principal paid</th>
+                    <th>Interest paid</th>
+                    <th>Balance left</th>
+                  </tr>
+                </thead>
+                <tbody id="scheduleBody"></tbody>
+              </table>
+            </div>
+          </details>
+        </section>
+
+        <section class="card span" aria-labelledby="learnTitle">
+          <h2 id="learnTitle">Mortgage jargon, explained</h2>
+          <details>
+            <summary>What is principal?</summary>
+            <p>The amount you actually borrowed: the property price minus your down payment.</p>
+          </details>
+          <details>
+            <summary>What is interest?</summary>
+            <p>
+              The bank's fee for lending you money. Early on most of each payment is interest; over
+              time more goes to principal.
+            </p>
+          </details>
+          <details>
+            <summary>What is an annuity payment?</summary>
+            <p>
+              A payment that stays the same every month. It is calculated so the loan reaches
+              exactly zero on the last payment.
+            </p>
+          </details>
+          <details>
+            <summary>What is a down payment?</summary>
+            <p>
+              Your own money put in upfront. A bigger down payment means a smaller loan and less
+              interest overall.
+            </p>
+          </details>
+          <details>
+            <summary>What is overpayment?</summary>
+            <p>
+              Total interest as a percentage of the loan. 67% means you pay back the loan plus
+              another 67% of it in interest.
+            </p>
+          </details>
+          <div class="section-title">Quick tips</div>
+          <div class="tips">
+            <div class="tip">
+              <b>Compare terms</b>A longer term lowers the monthly payment but costs much more
+              interest.
+            </div>
+            <div class="tip">
+              <b>Save more upfront</b>Each extra 5% of down payment can noticeably cut your rate and
+              total cost.
+            </div>
+            <div class="tip">
+              <b>Keep a buffer</b>Aim for a payment below 30% of income so surprises don't hurt.
             </div>
           </div>
         </section>

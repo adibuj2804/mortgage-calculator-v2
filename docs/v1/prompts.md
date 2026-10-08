@@ -16,3 +16,16 @@
 
 **Výsledok:** Claude vytvoril štruktúru priečinkov a prázdne súbory.
 **Zmeny promptu:** žiadne.
+
+## Step 1 – Functional definition (plan mode)
+
+**Prompt:**
+
+> I'm planning V1 of a mortgage calculator. Interview me about the functional scope of V1. Ask one question at a time. Push back when I add features that don't belong in V1. Every requirement must have inputs, output, rules and an example with concrete numbers. No technologies (frameworks, databases) – only what the user gets. At the end, propose the document with sections: Purpose, Functional requirements, Inputs and limits, Domain rules, Out of scope V1, Open questions.
+
+**Výsledok:** Claude sa pýtal 7 otázok (jadro, typ úveru, výstupy, vstupy a limity, zaokrúhľovanie, ďalšie funkcie, neplatné vstupy); splátkový kalendár, poplatky a mimoriadne splátky odsunul mimo V1 a výsledok navrhol v požadovanej štruktúre.
+**Zmeny promptu:** žiadne.
+
+**Prompt na uloženie:**
+
+> Save the approved functional definition to docs/v1/01-functional.md in the required structure.

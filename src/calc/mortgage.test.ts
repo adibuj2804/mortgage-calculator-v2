@@ -44,8 +44,22 @@ describe('calculateLoan', () => {
     expect(r.principalShare).toBe(0);
   });
 
-  it('treats negative down payment and rate as zero', () => {
-    expect(ok({ ...base, downPayment: -5, annualRatePct: -1 }).loan).toBe(250_000);
+  it('treats a negative down payment as zero', () => {
+    expect(ok({ ...base, downPayment: -5 }).loan).toBe(250_000);
+  });
+
+  it('rejects a negative interest rate', () => {
+    expect(calculateLoan({ ...base, annualRatePct: -1 })).toEqual({
+      ok: false,
+      error: 'negative-rate',
+    });
+  });
+
+  it('rejects a term that rounds to zero payments', () => {
+    expect(calculateLoan({ ...base, years: 0.02 })).toEqual({
+      ok: false,
+      error: 'invalid-price-or-term',
+    });
   });
 
   it('rejects a non-positive price or term', () => {

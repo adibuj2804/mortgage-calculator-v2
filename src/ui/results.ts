@@ -6,6 +6,7 @@ import { renderDonut } from './donut';
 const ERROR_MESSAGES: Record<LoanValidationError, string> = {
   'invalid-price-or-term': 'Enter a valid property price and loan term.',
   'down-payment-exceeds-price': 'Down payment cannot exceed the property price.',
+  'negative-rate': 'The interest rate cannot be negative.',
 };
 
 export function showError(error: LoanValidationError | null): void {

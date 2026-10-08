@@ -21,7 +21,8 @@ export interface LoanResult {
   principalShare: number;
 }
 
-export type LoanValidationError = 'invalid-price-or-term' | 'down-payment-exceeds-price';
+export type LoanValidationError =
+  'invalid-price-or-term' | 'down-payment-exceeds-price' | 'negative-rate';
 
 export type LoanOutcome =
   { ok: true; result: LoanResult } | { ok: false; error: LoanValidationError };
@@ -29,13 +30,14 @@ export type LoanOutcome =
 export function calculateLoan(input: LoanInput): LoanOutcome {
   const price = input.price;
   const downPayment = Math.max(0, input.downPayment);
-  const annualRatePct = Math.max(0, input.annualRatePct);
+  const annualRatePct = input.annualRatePct;
+  const paymentCount = Math.round(input.years * 12);
 
-  if (!(price > 0) || !(input.years > 0)) return { ok: false, error: 'invalid-price-or-term' };
+  if (!(price > 0) || !(paymentCount >= 1)) return { ok: false, error: 'invalid-price-or-term' };
+  if (annualRatePct < 0) return { ok: false, error: 'negative-rate' };
   if (downPayment > price) return { ok: false, error: 'down-payment-exceeds-price' };
 
   const loan = price - downPayment;
-  const paymentCount = Math.round(input.years * 12);
   const monthlyRate = annualRatePct / 100 / 12;
 
   let monthlyPayment: number;

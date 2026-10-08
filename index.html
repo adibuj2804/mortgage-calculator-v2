@@ -1,8 +1,8 @@
 <!doctype html>
-<html lang="sk">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>Hypotekárna kalkulačka</title>
+    <title>Mortgage calculator</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -14,20 +14,20 @@
   <body>
     <div class="wrap">
       <header>
-        <div class="eyebrow">Splátkový kalkulátor</div>
-        <h1>Koľko bude stáť vaša hypotéka</h1>
+        <div class="eyebrow">Repayment calculator</div>
+        <h1>How much will your mortgage cost</h1>
         <p class="sub">
-          Zadajte cenu nehnuteľnosti, vlastné zdroje, úrok a dobu splácania — kalkulačka spočíta
-          mesačnú splátku aj celkovú preplatenosť úveru.
+          Enter the property price, down payment, interest rate and term — the calculator works out
+          your monthly payment and the total overpayment on the loan.
         </p>
       </header>
 
       <div class="grid">
         <form class="card" id="form" novalidate>
-          <h2>Parametre úveru</h2>
+          <h2>Loan parameters</h2>
 
           <div class="field">
-            <label for="price">Cena nehnuteľnosti</label>
+            <label for="price">Property price</label>
             <div class="input-shell">
               <input
                 type="number"
@@ -42,7 +42,7 @@
           </div>
 
           <div class="field">
-            <label for="dpPct">Vlastné zdroje (akontácia)</label>
+            <label for="dpPct">Down payment</label>
             <div class="dp-pair">
               <div class="input-shell">
                 <input
@@ -71,7 +71,7 @@
           </div>
 
           <div class="field">
-            <label for="rate">Ročná úroková sadzba</label>
+            <label for="rate">Annual interest rate</label>
             <div class="input-shell">
               <input
                 type="number"
@@ -87,7 +87,7 @@
           </div>
 
           <div class="field">
-            <label for="years">Doba splácania</label>
+            <label for="years">Loan term</label>
             <div class="input-shell">
               <input
                 type="number"
@@ -98,7 +98,7 @@
                 step="1"
                 value="25"
               />
-              <span class="unit">rokov</span>
+              <span class="unit">years</span>
             </div>
             <div class="term-presets" id="presets">
               <button type="button" data-years="15">15</button>
@@ -108,19 +108,19 @@
             </div>
           </div>
 
-          <button type="submit" class="calc-btn">Vypočítať splátku</button>
+          <button type="submit" class="calc-btn">Calculate payment</button>
           <div class="err" id="err" role="alert"></div>
         </form>
 
         <section class="card" aria-live="polite">
           <div class="results-head">
-            <h2>Výsledok</h2>
-            <span class="sample-tag" id="sampleTag">ukážka</span>
+            <h2>Result</h2>
+            <span class="sample-tag" id="sampleTag">sample</span>
           </div>
 
           <div class="headline">
             <span class="value" id="monthlyPayment">—</span>
-            <span class="per-month">/ mesiac</span>
+            <span class="per-month">/ month</span>
           </div>
 
           <div class="chart-row">
@@ -132,7 +132,7 @@
                 role="img"
                 aria-labelledby="donutTitle"
               >
-                <title id="donutTitle">Podiel istiny a úrokov na celkovej splátke</title>
+                <title id="donutTitle">Share of principal and interest in total repayment</title>
                 <circle
                   cx="84"
                   cy="84"
@@ -171,7 +171,7 @@
                   font-size="12"
                   fill="var(--ink-faint)"
                 >
-                  istina
+                  principal
                 </text>
                 <text
                   x="84"
@@ -190,13 +190,14 @@
             <div class="legend">
               <div class="legend-row">
                 <span class="legend-label"
-                  ><span class="swatch" style="background: var(--accent)"></span>Istina (úver)</span
+                  ><span class="swatch" style="background: var(--accent)"></span>Principal
+                  (loan)</span
                 >
                 <span class="legend-value" id="legendPrincipal">—</span>
               </div>
               <div class="legend-row">
                 <span class="legend-label"
-                  ><span class="swatch" style="background: var(--teal)"></span>Úroky spolu</span
+                  ><span class="swatch" style="background: var(--teal)"></span>Total interest</span
                 >
                 <span class="legend-value" id="legendInterest">—</span>
               </div>
@@ -205,19 +206,19 @@
 
           <div class="stat-strip">
             <div class="stat">
-              <div class="k">Výška úveru</div>
+              <div class="k">Loan amount</div>
               <div class="v" id="statLoan">—</div>
             </div>
             <div class="stat">
-              <div class="k">Celkovo zaplatené</div>
+              <div class="k">Total paid</div>
               <div class="v" id="statTotal">—</div>
             </div>
             <div class="stat">
-              <div class="k">Počet splátok</div>
+              <div class="k">Number of payments</div>
               <div class="v" id="statCount">—</div>
             </div>
             <div class="stat">
-              <div class="k">Preplatenosť</div>
+              <div class="k">Overpayment</div>
               <div class="v" id="statOverpay">—</div>
             </div>
           </div>
@@ -225,8 +226,8 @@
       </div>
 
       <footer>
-        Orientačný výpočet anuitnej splátky (istina + úrok). Nezohľadňuje poistenie, poplatky ani
-        dane.
+        Indicative annuity payment calculation (principal + interest). Does not include insurance,
+        fees or taxes.
       </footer>
     </div>
     <script type="module" src="/src/main.ts"></script>

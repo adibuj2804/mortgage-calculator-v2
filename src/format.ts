@@ -1,4 +1,4 @@
-const LOCALE = 'sk-SK';
+const LOCALE = 'en-IE';
 
 const eur = new Intl.NumberFormat(LOCALE, {
   style: 'currency',

@@ -4,8 +4,8 @@ import { byId } from './dom';
 import { renderDonut } from './donut';
 
 const ERROR_MESSAGES: Record<LoanValidationError, string> = {
-  'invalid-price-or-term': 'Zadajte platnú cenu nehnuteľnosti a dobu splácania.',
-  'down-payment-exceeds-price': 'Vlastné zdroje nemôžu prevyšovať cenu nehnuteľnosti.',
+  'invalid-price-or-term': 'Enter a valid property price and loan term.',
+  'down-payment-exceeds-price': 'Down payment cannot exceed the property price.',
 };
 
 export function showError(error: LoanValidationError | null): void {

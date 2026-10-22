@@ -75,9 +75,13 @@ The decimal separator is a dot (3.75).
 - Other currencies, a currency selector, a term entered in months
 - Decimal comma input
 
+## Decisions on the former open questions
+
+1. **Decimal comma:** not accepted in V1. Input uses a dot only. "3,75" shows "Enter a number".
+2. **Interest rate meaning:** the nominal annual rate with monthly compounding. The effective annual rate (APR/RPMN) is not used.
+3. **Limits:** unchanged (1,000 to 10,000,000 €, 0 to 25 %, 1 to 40 years).
+4. **Language:** the user interface is in English.
+
 ## Open questions
 
-1. Decimal comma (3,75): assumed dot only. Should the comma be accepted too?
-2. The "annual interest rate" is the nominal rate with monthly compounding, which is the standard for mortgages. Is that the meaning wanted, or is the effective annual rate (APR/RPMN) needed?
-3. Are the limits (up to 10 M €, 25 %, 40 years) acceptable, or should they be tighter?
-4. Should the user interface be in English or Slovak?
+None at the moment.

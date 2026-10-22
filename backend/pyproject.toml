@@ -17,6 +17,7 @@ dev = [
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+pythonpath = ["."]
 addopts = "-ra"
 markers = [
     "integration: needs a real Supabase project (set RUN_INTEGRATION=1)",

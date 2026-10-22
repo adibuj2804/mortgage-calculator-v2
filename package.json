@@ -17,7 +17,8 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "prepare": "husky"
+    "prepare": "husky",
+    "check:scenarios": "node scripts/check-scenarios.ts"
   },
   "lint-staged": {
     "*.{ts,js,mjs,json,css,html,md,yml}": "prettier --write",

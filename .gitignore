@@ -19,3 +19,7 @@ coverage/
 # Logs
 *.log
 npm-debug.log*
+
+# Local tool folders
+.playwright-mcp/
+.claude/launch.json

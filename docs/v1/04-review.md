@@ -49,7 +49,7 @@ Seven items (the 0 % interest and the negative interest are one finding), all al
 
 ## Round 2: findings and decisions
 
-Reviewer: a second subagent with a fresh context, the same prompt, files 01 to 03 as revised after round 1. Result: **no blockers**, 5 major, 7 minor. All 27 reference values matched again (payments, totals, the 527.84 end-to-end value, the exact annuity value, the float `toFixed` hazards).
+Reviewer: a second subagent with a fresh context, the same prompt, files 01 to 03 as revised after round 1. Result: **no blockers**, 4 major, 8 minor. All 27 reference values matched again (payments, totals, the 527.84 end-to-end value, the exact annuity value, the float `toFixed` hazards).
 
 | #                  | Severity | Affects              | Finding                                                                                                                                                                | Decision        | Reason and change                                                                                                                                                                                                     |
 | ------------------ | -------- | -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

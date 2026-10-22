@@ -47,7 +47,7 @@
 - Resolve the 4 open questions with Claude's defaults (dot decimal only, nominal rate, same limits, English UI).
 - Restore the paused Supabase project for Lesson 5.
 
-**Zmeny promptu:** žiadne. Honest note: from here on the content of 02, 03 and 05 was drafted by Claude from this one delegating prompt and the three answers above, not from separate prompts written by the student. The student reviewed it afterwards.
+**Zmeny promptu:** žiadne. Honest note: from here on the content of 02, 03 and 05 was drafted by Claude from this one delegating prompt and the three answers above, not from separate prompts written by the student. The student still has to read it and own it before handing it in.
 
 ## Step 2 – Architecture (executed by Claude, no separate student prompt)
 
@@ -83,7 +83,7 @@
 >    Return numbered findings as a table with severity (blocker / major / minor) and what each affects.
 >    Do not modify any file.
 
-**Výsledok:** 17 findings (2 blockers, 7 major, 8 minor). All reference values were correct. The blockers were a negative total interest at 0 % and a missing DOM contract for the e2e tests. Findings and decisions are in `04-review.md`.
+**Výsledok:** 17 findings (2 blockers, 8 major, 7 minor). All reference values were correct. The blockers were a negative total interest at 0 % and a missing DOM contract for the e2e tests. Findings and decisions are in `04-review.md`.
 **Zmeny promptu:** the absolute paths, the "do not read any other file" sentence and the way to run the script were added to the assignment's template, so the reviewer stays inside the three files.
 
 ## Step 5 – Decisions on the findings and update of 01 to 03 (executed by Claude)
@@ -99,7 +99,7 @@
 
 **Prompt (verbatim):** the same as in Step 4 (with the absolute paths to 01, 02, 03), with two additions: in item 5 "Apply the rounding and totals rules exactly as the plan states them." and at the end "Keep the report under 900 words."
 
-**Výsledok:** no blockers, 5 major and 7 minor findings, all 27 reference values correct. The one real find: a half-cent tie also occurs above 0 % (1,000 €, 0.03 %, 1 month), so the payment is now rounded with exact `BigInt` arithmetic. Details in `04-review.md`.
+**Výsledok:** no blockers, 4 major and 8 minor findings, all 27 reference values correct. The one real find: a half-cent tie also occurs above 0 % (1,000 €, 0.03 %, 1 month), so the payment is now rounded with exact `BigInt` arithmetic. Details in `04-review.md`.
 **Zmeny promptu:** the two additions above. "Apply the rules exactly as stated" was added because round 1 had spent effort on the rules themselves; "under 900 words" because the round 1 report was very long.
 
 ## Step 6 – Experiment E4 (a session that sees only the plan)
@@ -115,4 +115,22 @@
 
 **Prompt:** none per step. The build followed `docs/v1/05-plan.md` and the project `CLAUDE.md` (tests first, one commit per step). Test-first was kept by running the new tests and seeing them fail before each implementation.
 **Výsledok:** see the git log and `06-retro.md`.
+**Zmeny promptu:** none.
+
+## Step 8 – Independent recompute of `calculateLoan` (subagent with a clean context)
+
+**Prompt (verbatim, shortened only by the example output line):**
+
+> You are an independent verifier. You did not write this code and you must not edit any file in the repository.
+> Goal: check that the function `calculateLoan` in .../src/calc/payment.ts returns exactly the values that the rules below define. Do not read the repository's tests or docs, and do not read reference-values.py. You may read payment.ts only to learn how to call it.
+> Rules (the specification): [the FR1 and FR2 rules: annuity at month end, rounded half up with exact rational arithmetic, 0 % gives total paid = loan and interest 0.00, above 0 % interest = max(0, rounded payment x n - loan)]
+> Do this: 1. Write an exact Python implementation of the rules. 2. Generate 300 random valid inputs (loan 1000.00 to 10000000.00, rate 0.00 to 25.00, months 1 to 480, a few rates exactly 0) plus 12 fixed cases (the reference cases and the four tie cases). 3. Run all inputs through one Node process and compare every field in integer cents. 4. Report how many inputs were compared, how many mismatched, and every mismatch. Under 250 words.
+
+**Výsledok:** 312 inputs compared, 0 mismatches.
+**Zmeny promptu:** the plan only said "recompute the reference inputs". I changed it to a random differential test with 300 random inputs, because 12 fixed cases would not have found a rounding hazard like the one round 2 found.
+
+## Step 9 – Browser check, README, retro
+
+**Prompt:** none (executed from `05-plan.md`, step 6). The real-browser check covered: valid input, an invalid input, an edit after a result, the Enter key, and phone width.
+**Výsledok:** all behaved as specified. A small spacing polish was made in `main.css`.
 **Zmeny promptu:** none.

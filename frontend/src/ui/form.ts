@@ -1,8 +1,26 @@
-import { calculateLoan } from '../calc/payment';
-import { validateInputs, type FieldErrors, type RawInputs } from '../calc/validate';
-import { formatEuro } from '../format/euro';
+import { ApiValidationError } from '../api/client';
+import type { ApiClient } from '../api/client';
+import type { CalculateRequest, CalculateResponse } from '../api/types';
+import { formatCents } from '../format/euro';
+import { formatSavedItem } from '../format/saved';
+import { renderChart } from './chart';
+import { renderSchedule } from './scheduleTable';
 
-const FIELDS = ['loan', 'rate', 'years'] as const;
+const SAVED_LIST_SIZE = 20;
+const NO_CONNECTION = "Can't reach the calculator. Try again.";
+const SAVE_FAILED = 'Could not save right now. Your result is still here.';
+const LIST_UNAVAILABLE = 'Saved calculations are unavailable right now.';
+const SCHEDULE_NOTE =
+  'The last payment is adjusted so that the balance ends at exactly 0.00 €. The totals here can differ slightly from the figures above.';
+
+// API field name -> id of the input on the page (the error slot is `<id>-error`).
+const FIELDS = {
+  loan: 'loan',
+  annual_rate_percent: 'rate',
+  term_years: 'years',
+  extra_monthly_payment: 'extra',
+} as const;
+type Field = keyof typeof FIELDS;
 
 const TEMPLATE = `
   <form id="calculator" class="card" novalidate>
@@ -21,7 +39,13 @@ const TEMPLATE = `
       <input id="years" name="years" type="text" inputmode="numeric" autocomplete="off" placeholder="20" aria-describedby="years-error">
       <p id="years-error" class="error" role="alert"></p>
     </div>
+    <div class="field">
+      <label for="extra">Extra monthly payment (€, optional)</label>
+      <input id="extra" name="extra" type="text" inputmode="decimal" autocomplete="off" placeholder="0" aria-describedby="extra-error">
+      <p id="extra-error" class="error" role="alert"></p>
+    </div>
     <button type="submit" class="button">Calculate</button>
+    <p id="calc-error" class="error" role="alert"></p>
   </form>
   <section id="result" class="card result" aria-live="polite" hidden>
     <h2 class="result__title">Your mortgage</h2>
@@ -30,65 +54,211 @@ const TEMPLATE = `
       <div class="figure"><dt>Total paid</dt><dd id="result-total-paid"></dd></div>
       <div class="figure"><dt>Total interest</dt><dd id="result-total-interest"></dd></div>
     </dl>
+    <div id="extra-result" class="extra" hidden>
+      <h3>With your extra payment</h3>
+      <dl class="figures">
+        <div class="figure"><dt>Loan ends after</dt><dd id="result-payoff"></dd></div>
+        <div class="figure"><dt>Months saved</dt><dd id="result-months-saved"></dd></div>
+        <div class="figure"><dt>Interest with extra payments</dt><dd id="result-extra-interest"></dd></div>
+        <div class="figure"><dt>Interest saved</dt><dd id="result-interest-saved"></dd></div>
+      </dl>
+    </div>
+    <section id="schedule" class="schedule">
+      <h3>Repayment schedule</h3>
+      <svg id="balance-chart" viewBox="0 0 640 260" role="img" aria-labelledby="balance-chart-title"></svg>
+      <div class="table-wrap">
+        <table id="schedule-table">
+          <thead><tr><th>Year</th><th>Paid</th><th>Interest</th><th>Principal</th><th>Balance</th></tr></thead>
+          <tbody id="schedule-body"></tbody>
+          <tfoot><tr id="schedule-total"></tr></tfoot>
+        </table>
+      </div>
+      <p id="schedule-note" class="note"></p>
+    </section>
+    <div class="save">
+      <button type="button" id="save-button" class="button button--secondary">Save this calculation</button>
+      <p id="save-status" role="status"></p>
+    </div>
+  </section>
+  <section id="saved" class="card">
+    <h2 class="result__title">Saved calculations</h2>
+    <ul id="saved-list"></ul>
+    <p id="saved-message" role="status"></p>
   </section>
 `;
 
-function byId<T extends HTMLElement>(root: HTMLElement, id: string): T {
+function byId<T extends Element = HTMLElement>(root: HTMLElement, id: string): T {
   const element = root.querySelector<T>(`#${id}`);
   if (!element) throw new Error(`Missing #${id}`);
   return element;
 }
 
-export function mountCalculator(root: HTMLElement): void {
+const months = (count: number) => `${count} ${count === 1 ? 'month' : 'months'}`;
+
+export function mountCalculator(root: HTMLElement, api: ApiClient, clientId: string): void {
   root.innerHTML = TEMPLATE;
 
   const form = byId<HTMLFormElement>(root, 'calculator');
+  const submit = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
   const result = byId(root, 'result');
-  const figures = {
-    payment: byId(root, 'result-payment'),
-    totalPaid: byId(root, 'result-total-paid'),
-    totalInterest: byId(root, 'result-total-interest'),
-  };
+  const calcError = byId(root, 'calc-error');
+  const extraBlock = byId(root, 'extra-result');
+  const saveButton = byId<HTMLButtonElement>(root, 'save-button');
+  const saveStatus = byId(root, 'save-status');
+  const savedList = byId(root, 'saved-list');
+  const savedMessage = byId(root, 'saved-message');
   const inputs = Object.fromEntries(
-    FIELDS.map((field) => [field, byId<HTMLInputElement>(root, field)]),
-  ) as Record<(typeof FIELDS)[number], HTMLInputElement>;
+    (Object.entries(FIELDS) as Array<[Field, string]>).map(([field, id]) => [
+      field,
+      byId<HTMLInputElement>(root, id),
+    ]),
+  ) as Record<Field, HTMLInputElement>;
   const slots = Object.fromEntries(
-    FIELDS.map((field) => [field, byId(root, `${field}-error`)]),
-  ) as Record<(typeof FIELDS)[number], HTMLElement>;
+    (Object.entries(FIELDS) as Array<[Field, string]>).map(([field, id]) => [
+      field,
+      byId(root, `${id}-error`),
+    ]),
+  ) as Record<Field, HTMLElement>;
 
-  function showErrors(errors: FieldErrors): void {
-    for (const field of FIELDS) {
+  let counter = 0;
+  let calculating = false;
+  let saving = false;
+  let saved = false;
+  let listCounter = 0;
+  let shown: CalculateRequest | null = null;
+
+  const setText = (id: string, content: string) => {
+    byId(root, id).textContent = content;
+  };
+
+  function showErrors(errors: Partial<Record<Field, string>>): void {
+    for (const field of Object.keys(FIELDS) as Field[]) {
       const message = errors[field] ?? '';
       slots[field].textContent = message;
       inputs[field].setAttribute('aria-invalid', String(message !== ''));
     }
   }
 
-  form.addEventListener('input', () => {
-    result.hidden = true;
-  });
+  function setSaveButton(state: 'ready' | 'saving' | 'saved'): void {
+    saveButton.disabled = state !== 'ready';
+    saveButton.textContent = { ready: 'Save this calculation', saving: 'Saving…', saved: 'Saved' }[
+      state
+    ];
+  }
 
-  form.addEventListener('submit', (event) => {
-    event.preventDefault();
+  function showResult(response: CalculateResponse): void {
+    const { result: figures, extra_payment: extra, schedule, input } = response;
+    setText('result-payment', formatCents(figures.monthly_payment_cents));
+    setText('result-total-paid', formatCents(figures.total_paid_cents));
+    setText('result-total-interest', formatCents(figures.total_interest_cents));
 
-    const raw: RawInputs = {
-      loan: inputs.loan.value,
-      rate: inputs.rate.value,
-      years: inputs.years.value,
-    };
-    const checked = validateInputs(raw);
-
-    if (!checked.ok) {
-      showErrors(checked.errors);
-      result.hidden = true;
-      return;
+    extraBlock.hidden = extra === null;
+    if (extra) {
+      setText('result-payoff', months(extra.months_to_payoff));
+      setText('result-months-saved', months(extra.months_saved));
+      setText('result-extra-interest', formatCents(extra.total_interest_cents));
+      setText('result-interest-saved', formatCents(extra.interest_saved_cents));
     }
 
-    showErrors({});
-    const loan = calculateLoan(checked.value);
-    figures.payment.textContent = formatEuro(loan.monthlyPayment);
-    figures.totalPaid.textContent = formatEuro(loan.totalPaid);
-    figures.totalInterest.textContent = formatEuro(loan.totalInterest);
+    renderSchedule(byId(root, 'schedule-body'), byId(root, 'schedule-total'), schedule);
+    setText('schedule-note', SCHEDULE_NOTE);
+    renderChart(
+      byId<SVGElement>(root, 'balance-chart'),
+      [input.loan_cents, ...schedule.yearly.map((year) => year.end_balance_cents)],
+      schedule.extra_balance_by_year_cents,
+    );
+
+    saved = false;
+    saveStatus.textContent = '';
+    setSaveButton('ready');
     result.hidden = false;
+  }
+
+  async function loadList(): Promise<void> {
+    const mine = (listCounter += 1);
+    try {
+      const items = await api.list(clientId, SAVED_LIST_SIZE);
+      if (mine !== listCounter) return;
+      savedList.replaceChildren(
+        ...items.map((item) => {
+          const li = document.createElement('li');
+          li.textContent = formatSavedItem(item);
+          return li;
+        }),
+      );
+      savedMessage.textContent = items.length === 0 ? 'Nothing saved yet.' : '';
+    } catch {
+      if (mine !== listCounter) return;
+      savedList.replaceChildren();
+      savedMessage.textContent = LIST_UNAVAILABLE;
+    }
+  }
+
+  async function save(): Promise<void> {
+    if (saving || saved || shown === null) return;
+    const request = shown;
+    const started = counter;
+    saving = true;
+    setSaveButton('saving');
+    try {
+      await api.save(request, clientId);
+      if (counter === started) {
+        saveStatus.textContent = 'Saved.';
+        saved = true;
+        setSaveButton('saved');
+      }
+      void loadList();
+    } catch {
+      if (counter === started) {
+        saveStatus.textContent = SAVE_FAILED;
+        setSaveButton('ready');
+      }
+    } finally {
+      saving = false;
+    }
+  }
+
+  form.addEventListener('input', () => {
+    counter += 1;
+    result.hidden = true;
+    saveStatus.textContent = '';
   });
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (calculating) return;
+
+    const request: CalculateRequest = {
+      loan: inputs.loan.value,
+      annual_rate_percent: inputs.annual_rate_percent.value,
+      term_years: inputs.term_years.value,
+      extra_monthly_payment: inputs.extra_monthly_payment.value,
+    };
+    const started = (counter += 1);
+    result.hidden = true;
+    calcError.textContent = '';
+    saveStatus.textContent = '';
+    calculating = true;
+    submit.disabled = true;
+    submit.textContent = 'Calculating…';
+
+    try {
+      const response = await api.calculate(request);
+      if (counter !== started) return;
+      showErrors({});
+      shown = request;
+      showResult(response);
+    } catch (error) {
+      if (counter !== started) return;
+      if (error instanceof ApiValidationError) showErrors(error.errors);
+      else calcError.textContent = NO_CONNECTION;
+    } finally {
+      calculating = false;
+      submit.disabled = false;
+      submit.textContent = 'Calculate';
+    }
+  });
+
+  saveButton.addEventListener('click', () => void save());
+  void loadList();
 }

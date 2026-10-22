@@ -10,3 +10,10 @@ export function formatEuro(amount: number): string {
 
   return `${grouped}.${rest} €`;
 }
+
+export function formatCents(cents: number): string {
+  if (!Number.isInteger(cents) || cents < 0) {
+    throw new RangeError(`Cannot format cents: ${cents}`);
+  }
+  return formatEuro(cents / 100);
+}

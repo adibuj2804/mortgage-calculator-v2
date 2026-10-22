@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatEuro } from './euro';
+import { formatCents, formatEuro } from './euro';
 
 describe('formatEuro (FR4)', () => {
   it('format-euro-thousands', () => {
@@ -50,5 +50,18 @@ describe('formatEuro (FR4)', () => {
   it('format-euro-rejects-not-finite', () => {
     expect(() => formatEuro(NaN)).toThrow(RangeError);
     expect(() => formatEuro(Infinity)).toThrow(RangeError);
+  });
+});
+
+describe('formatCents (FR4)', () => {
+  it('format-cents-converts-to-euros', () => {
+    expect(formatCents(14543520)).toBe('145,435.20 €');
+    expect(formatCents(60598)).toBe('605.98 €');
+    expect(formatCents(0)).toBe('0.00 €');
+  });
+
+  it('format-cents-rejects-non-integer', () => {
+    expect(() => formatCents(1.5)).toThrow(RangeError);
+    expect(() => formatCents(-1)).toThrow(RangeError);
   });
 });

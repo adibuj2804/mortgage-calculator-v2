@@ -221,3 +221,126 @@ input:focus-visible,
     transition: none !important;
   }
 }
+
+/* V2: extra payment, schedule, chart, saving, saved list */
+.button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  filter: none;
+}
+
+.button--secondary {
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+}
+
+#calc-error {
+  margin-top: 0.5rem;
+}
+
+.extra,
+.schedule,
+.save {
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--line);
+}
+
+.extra h3,
+.schedule h3 {
+  margin: 0 0 0.75rem;
+  font-size: 0.95rem;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+#balance-chart {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-bottom: 1rem;
+}
+
+#balance-chart .plot {
+  fill: none;
+  stroke: var(--line);
+}
+
+#balance-chart .line {
+  stroke-width: 2.5;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+#balance-chart .line--standard {
+  stroke: var(--muted);
+}
+
+#balance-chart .line--extra {
+  stroke: var(--accent);
+}
+
+#balance-chart .axis {
+  fill: var(--muted);
+  font-size: 12px;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+#schedule-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.85rem;
+}
+
+#schedule-table th,
+#schedule-table td {
+  padding: 0.4rem 0.5rem;
+  text-align: right;
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+}
+
+#schedule-table th:first-child,
+#schedule-table td:first-child {
+  text-align: left;
+}
+
+#schedule-table th {
+  color: var(--muted);
+  font-weight: 600;
+}
+
+#schedule-total td {
+  font-weight: 700;
+  border-bottom: 0;
+}
+
+#save-status,
+#saved-message {
+  min-height: 1.25rem;
+  margin: 0.5rem 0 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+#saved-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-variant-numeric: tabular-nums;
+}
+
+#saved-list li {
+  padding: 0.55rem 0;
+  border-top: 1px solid var(--line);
+  font-size: 0.9rem;
+}
+
+#saved-list li:first-child {
+  border-top: 0;
+}

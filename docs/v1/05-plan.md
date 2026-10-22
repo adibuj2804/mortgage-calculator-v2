@@ -56,6 +56,13 @@ Order follows the dependencies in `02-architecture.md`: first the modules nothin
 
 Before step 1 the old code (`src/calc`, `src/ui`, `src/format.ts`, `src/main.ts`, `src/styles`) is removed from `main`. It stays available on `archive/pink-redesign`. Step 1 starts with that removal and the jsdom dev dependency.
 
+Environment facts for the build:
+
+- Remote `origin` is `https://github.com/adibuj2804/mortgage-calculator-v2`, branch `main`. Every commit is pushed to `main`. The old code is already pushed on `archive/pink-redesign`.
+- Vite, TypeScript, Vitest, ESLint, Prettier, Husky and commitlint are installed and configured. The only dependency added is `jsdom` (a dev dependency, so `package.json` and `package-lock.json` change in step 1).
+- `docs/handoff.md` has the sections Done, Next and Open questions. Each step adds one line to Done and moves Next.
+- `.claude/` and `.playwright-mcp/` are local tool folders and are never committed.
+
 ## 5. Definition of done for each step
 
 - The tests of this module are green.

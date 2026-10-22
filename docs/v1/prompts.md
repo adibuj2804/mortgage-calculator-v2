@@ -66,3 +66,31 @@
 
 **Výsledok:** see `03-test-scenarios.md`. Reference values come from an independent Python `Decimal` script, verified by a month-by-month balance simulation that ends at 0 for every case.
 **Zmeny promptu:** žiadne (prvý pokus).
+
+## Step 4 – Independent review, round 1 (subagent with a clean context)
+
+**Prompt (verbatim, the assignment's template with absolute paths):**
+
+> You are an independent reviewer. You did not write this plan.
+> Read only these three files (absolute paths): /Users/adibuj/Desktop/upjs/claudeCode/mortgage-calculator/docs/v1/01-functional.md, /Users/adibuj/Desktop/upjs/claudeCode/mortgage-calculator/docs/v1/02-architecture.md, /Users/adibuj/Desktop/upjs/claudeCode/mortgage-calculator/docs/v1/03-test-scenarios.md. Do not read any other file in the repository or anywhere else.
+> Do not trust claims; check them.
+>
+> 1. Coverage: every requirement has a module and a test; every test checks a real requirement.
+> 2. Find ambiguous requirements that allow two implementations with different results.
+> 3. List missing edge cases and invalid inputs.
+> 4. For 3 out-of-scope features, describe exactly which modules must change.
+> 5. Recompute every reference value in a separate script (use python3 with Decimal, run via Bash with `python3 -c` or a heredoc; do not create files in the repository). Do not estimate.
+>    Return numbered findings as a table with severity (blocker / major / minor) and what each affects.
+>    Do not modify any file.
+
+**Výsledok:** 17 findings (2 blockers, 7 major, 8 minor). All reference values were correct. The blockers were a negative total interest at 0 % and a missing DOM contract for the e2e tests. Findings and decisions are in `04-review.md`.
+**Zmeny promptu:** the absolute paths, the "do not read any other file" sentence and the way to run the script were added to the assignment's template, so the reviewer stays inside the three files.
+
+## Step 5 – Decisions on the findings and update of 01 to 03 (executed by Claude)
+
+**Prompt (as executed, no separate student prompt):**
+
+> Decide every finding yourself: accept all blockers, accept or reject the others with a reason. Change 01 to 03 so that every accepted finding is visible there. Do not trust the reviewer blindly, check its suggested values with a script.
+
+**Výsledok:** 15 findings accepted, 1 partly accepted, 1 rejected. Checking the reviewer's suggested tie value found that 999.90 € is below the 1,000 € minimum, so a different value was used. Checking my own new reference values with the script found a typo (527.89 instead of 527.84).
+**Zmeny promptu:** none (first attempt).

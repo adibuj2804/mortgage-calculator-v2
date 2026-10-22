@@ -37,6 +37,14 @@ describe('calculateLoan: monthly payment (FR1)', () => {
     expect(calc(1000.02, 0, 12).monthlyPayment).toBe(83.34);
   });
 
+  it('payment-tie-positive-rate-one-month', () => {
+    expect(calc(1000, 0.03, 1).monthlyPayment).toBe(1000.03);
+  });
+
+  it('payment-tie-positive-rate-float-hazard', () => {
+    expect(calc(1000, 0.09, 1).monthlyPayment).toBe(1000.08);
+  });
+
   it('payment-min-loan-max-rate-1y', () => {
     expect(calc(1000, 25, 12).monthlyPayment).toBe(95.04);
   });
@@ -102,6 +110,12 @@ describe('calculateLoan: totals (FR2)', () => {
     expect(result.totalInterest).toBe(0);
   });
 
+  it('totals-tie-positive-rate-one-month', () => {
+    const result = calc(1000, 0.03, 1);
+    expect(result.totalPaid).toBe(1000.03);
+    expect(result.totalInterest).toBe(0.03);
+  });
+
   it('totals-max-case', () => {
     const result = calc(10000000, 25, 480);
     expect(result.totalPaid).toBe(100005033.6);
@@ -147,5 +161,16 @@ describe('payment module contract (exact annuity payment and errors)', () => {
 
   it('annuity-payment-rejects-zero-balance', () => {
     expect(() => annuityPayment(0, 0.003, 12)).toThrow(RangeError);
+  });
+
+  it('annuity-payment-rejects-bad-rate-and-months', () => {
+    expect(() => annuityPayment(1000, -0.1, 12)).toThrow(RangeError);
+    expect(() => annuityPayment(1000, 0.003, 0)).toThrow(RangeError);
+    expect(() => annuityPayment(1000, 0.003, 1.5)).toThrow(RangeError);
+  });
+
+  it('payment-rejects-negative-loan-and-infinite-months', () => {
+    expect(() => calc(-5, 4, 12)).toThrow(RangeError);
+    expect(() => calc(100000, 4, Infinity)).toThrow(RangeError);
   });
 });

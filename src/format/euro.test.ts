@@ -31,6 +31,18 @@ describe('formatEuro (FR4)', () => {
     expect(text.charCodeAt(text.length - 2)).toBe(32);
   });
 
+  it('format-euro-rounds-half-up', () => {
+    expect(formatEuro(0.005)).toBe('0.01 €');
+  });
+
+  it('format-euro-rounds-down-below-half', () => {
+    expect(formatEuro(0.004)).toBe('0.00 €');
+  });
+
+  it('format-euro-carries-into-next-thousand', () => {
+    expect(formatEuro(999.999)).toBe('1,000.00 €');
+  });
+
   it('format-euro-rejects-negative', () => {
     expect(() => formatEuro(-0.04)).toThrow(RangeError);
   });

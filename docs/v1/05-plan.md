@@ -8,7 +8,7 @@ Each goal can be ticked yes or no at the end.
 
 1. A user enters loan amount, rate and term, presses "Calculate", and sees monthly payment, total paid and total interest, exact to the cent (100,000 €, 4 %, 20 years gives 605.98 €, 145,435.20 €, 45,435.20 €).
 2. Invalid input never produces a result, and every invalid field shows its own message.
-3. All 94 scenarios in `03-test-scenarios.md` exist as automated tests and pass.
+3. All 95 scenarios in `03-test-scenarios.md` exist as automated tests and pass.
 4. The app starts with one command (`npm run dev`) and the README says how.
 
 ## 2. Scope
@@ -25,14 +25,14 @@ Test names are exactly the names in `03-test-scenarios.md`. A criterion without 
 
 | Group                                    | Test names (prefix in `03`)                                                                                                                                                              | Rows   |
 | ---------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
-| Monthly payment (FR1)                    | `payment-standard-*`, `payment-typical-*`, `payment-zero-rate-*`, `payment-tie-*`, `payment-min-*`, `payment-max-*`, `payment-tiny-*`, `payment-one-month-term`, `payment-no-v1-maximum` | 14     |
+| Monthly payment (FR1)                    | `payment-standard-*`, `payment-typical-*`, `payment-zero-rate-*`, `payment-tie-*`, `payment-min-*`, `payment-max-*`, `payment-tiny-*`, `payment-one-month-term`, `payment-no-v1-maximum` | 15     |
 | Totals (FR2)                             | `totals-*`                                                                                                                                                                               | 10     |
 | Module 1 contract                        | `annuity-payment-*`, `payment-rejects-*`                                                                                                                                                 | 10     |
 | Validation (FR3)                         | `validate-*`                                                                                                                                                                             | 33     |
 | Display format (FR4)                     | `format-euro-*`                                                                                                                                                                          | 12     |
 | Modules together                         | `functional-*`                                                                                                                                                                           | 2      |
 | End to end through the form (FR1 to FR5) | `e2e-*`                                                                                                                                                                                  | 13     |
-| **Total**                                |                                                                                                                                                                                          | **94** |
+| **Total**                                |                                                                                                                                                                                          | **95** |
 
 ### Technical
 
@@ -48,7 +48,7 @@ Order follows the dependencies in `02-architecture.md`: first the modules nothin
 | Step | Module                                                               | Tests that must pass                     | Commit message                                    |
 | ---- | -------------------------------------------------------------------- | ---------------------------------------- | ------------------------------------------------- |
 | 1    | `src/format/euro.ts`                                                 | the 12 `format-euro-*` tests             | `feat(format): add euro formatter`                |
-| 2    | `src/calc/payment.ts`                                                | 14 payment, 10 totals, 10 contract tests | `feat(calc): add annuity payment and loan totals` |
+| 2    | `src/calc/payment.ts`                                                | 15 payment, 10 totals, 10 contract tests | `feat(calc): add annuity payment and loan totals` |
 | 3    | `src/calc/validate.ts`                                               | the 33 `validate-*` tests                | `feat(calc): add input validation`                |
 | 4    | (no new module) functional tests                                     | the 2 `functional-*` tests               | `test: add functional tests across modules`       |
 | 5    | `src/ui/form.ts`, `src/main.ts`, `index.html`, `src/styles/main.css` | the 13 `e2e-*` tests                     | `feat(ui): add calculator form`                   |
@@ -83,10 +83,10 @@ Step 6 is done when every item in section 3 is ticked and the app was checked on
 
 ## 7. Risks and open questions
 
-| Risk                                                                  | What we do                                                                                                                             |
-| --------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| Floating-point error on half-cent ties                                | The payment is rounded with exact `BigInt` arithmetic, and three `payment-tie-*` tests (0 % and above) fail on a float implementation. |
-| The e2e tests depend on the DOM contract, so a changed id breaks them | The contract is in `02-architecture.md`. If it must change, change the document first, then tests, then code.                          |
-| jsdom does not do real layout or Enter-key implicit submission        | The Enter test submits the form the way Enter does; the browser check in step 6 presses Enter once for real.                           |
-| The plan itself is wrong in a place we did not see                    | Fix the file in `docs/v1/` first, write the reason in `06-retro.md`, then change the code. Never bypass the plan.                      |
-| Open questions                                                        | None at the moment.                                                                                                                    |
+| Risk                                                                  | What we do                                                                                                                                                                 |
+| --------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Floating-point error on half-cent ties                                | The payment is rounded with exact `BigInt` arithmetic, and four `payment-tie-*` tests (0 % and above; one fails on a float implementation) fail on a float implementation. |
+| The e2e tests depend on the DOM contract, so a changed id breaks them | The contract is in `02-architecture.md`. If it must change, change the document first, then tests, then code.                                                              |
+| jsdom does not do real layout or Enter-key implicit submission        | The Enter test submits the form the way Enter does; the browser check in step 6 presses Enter once for real.                                                               |
+| The plan itself is wrong in a place we did not see                    | Fix the file in `docs/v1/` first, write the reason in `06-retro.md`, then change the code. Never bypass the plan.                                                          |
+| Open questions                                                        | None at the moment.                                                                                                                                                        |

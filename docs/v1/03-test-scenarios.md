@@ -16,22 +16,23 @@ Error messages (from FR3): `Enter a number`, `Use at most 2 decimals`, `Term mus
 
 ## Unit tests: `calc/payment.ts`, monthly payment (FR1)
 
-| Test                                | Level | Module       | Verifies | Input             | Expected output                                                     | Source     | Type             |
-| ----------------------------------- | ----- | ------------ | -------- | ----------------- | ------------------------------------------------------------------- | ---------- | ---------------- |
-| payment-standard-100k-4pct-20y      | unit  | calc/payment | FR1      | 100000, 4, 240    | payment 605.98                                                      | S1, S2, S4 | happy path       |
-| payment-standard-200k-3.5pct-30y    | unit  | calc/payment | FR1      | 200000, 3.5, 360  | payment 898.09                                                      | S1, S2, S4 | happy path       |
-| payment-typical-250k-4.5pct-25y     | unit  | calc/payment | FR1      | 250000, 4.5, 300  | payment 1389.58                                                     | S1, S2, S4 | happy path       |
-| payment-zero-rate-120k-10y          | unit  | calc/payment | FR1      | 120000, 0, 120    | payment 1000.00                                                     | S1, S4     | boundary (rate)  |
-| payment-zero-rate-rounds-up         | unit  | calc/payment | FR1      | 100000, 0, 36     | payment 2777.78 (exact 2777.7777...)                                | S1, S4     | boundary (round) |
-| payment-zero-rate-rounds-down       | unit  | calc/payment | FR1      | 1000, 0, 12       | payment 83.33 (exact 83.3333...)                                    | S1         | boundary (round) |
-| payment-tie-half-up-not-half-even   | unit  | calc/payment | FR1      | 1000.14, 0, 12    | payment 83.35 (exact tie 83.345, half-even would give 83.34)        | S1, S5     | boundary (round) |
-| payment-tie-float-hazard            | unit  | calc/payment | FR1      | 1000.02, 0, 12    | payment 83.34 (exact tie 83.335, floating `toFixed(2)` gives 83.33) | S1, S5     | boundary (round) |
-| payment-tie-positive-rate-one-month | unit  | calc/payment | FR1      | 1000, 0.03, 1     | payment 1000.03 (exact tie 1000.025 at a rate above 0)              | S1, S5     | boundary (round) |
-| payment-min-loan-max-rate-1y        | unit  | calc/payment | FR1      | 1000, 25, 12      | payment 95.04                                                       | S1, S2, S4 | boundary         |
-| payment-max-loan-max-rate-max-term  | unit  | calc/payment | FR1      | 10000000, 25, 480 | payment 208343.82                                                   | S1, S2, S4 | boundary         |
-| payment-tiny-rate-0.01pct           | unit  | calc/payment | FR1      | 100000, 0.01, 120 | payment 833.75                                                      | S1, S2, S4 | boundary (rate)  |
-| payment-one-month-term              | unit  | calc/payment | FR1      | 5000, 6, 1        | payment 5025.00                                                     | S1         | boundary (term)  |
-| payment-no-v1-maximum               | unit  | calc/payment | FR1      | 20000000, 4, 240  | payment 121196.07 (the module does not enforce the V1 loan maximum) | S1         | boundary         |
+| Test                                   | Level | Module       | Verifies | Input             | Expected output                                                                 | Source     | Type             |
+| -------------------------------------- | ----- | ------------ | -------- | ----------------- | ------------------------------------------------------------------------------- | ---------- | ---------------- |
+| payment-standard-100k-4pct-20y         | unit  | calc/payment | FR1      | 100000, 4, 240    | payment 605.98                                                                  | S1, S2, S4 | happy path       |
+| payment-standard-200k-3.5pct-30y       | unit  | calc/payment | FR1      | 200000, 3.5, 360  | payment 898.09                                                                  | S1, S2, S4 | happy path       |
+| payment-typical-250k-4.5pct-25y        | unit  | calc/payment | FR1      | 250000, 4.5, 300  | payment 1389.58                                                                 | S1, S2, S4 | happy path       |
+| payment-zero-rate-120k-10y             | unit  | calc/payment | FR1      | 120000, 0, 120    | payment 1000.00                                                                 | S1, S4     | boundary (rate)  |
+| payment-zero-rate-rounds-up            | unit  | calc/payment | FR1      | 100000, 0, 36     | payment 2777.78 (exact 2777.7777...)                                            | S1, S4     | boundary (round) |
+| payment-zero-rate-rounds-down          | unit  | calc/payment | FR1      | 1000, 0, 12       | payment 83.33 (exact 83.3333...)                                                | S1         | boundary (round) |
+| payment-tie-half-up-not-half-even      | unit  | calc/payment | FR1      | 1000.14, 0, 12    | payment 83.35 (exact tie 83.345, half-even would give 83.34)                    | S1, S5     | boundary (round) |
+| payment-tie-float-hazard               | unit  | calc/payment | FR1      | 1000.02, 0, 12    | payment 83.34 (exact tie 83.335, floating `toFixed(2)` gives 83.33)             | S1, S5     | boundary (round) |
+| payment-tie-positive-rate-one-month    | unit  | calc/payment | FR1      | 1000, 0.03, 1     | payment 1000.03 (exact tie 1000.025 at a rate above 0)                          | S1, S5     | boundary (round) |
+| payment-tie-positive-rate-float-hazard | unit  | calc/payment | FR1      | 1000, 0.09, 1     | payment 1000.08 (exact tie 1000.075; a floating-point Math.round gives 1000.07) | S1, S5     | boundary (round) |
+| payment-min-loan-max-rate-1y           | unit  | calc/payment | FR1      | 1000, 25, 12      | payment 95.04                                                                   | S1, S2, S4 | boundary         |
+| payment-max-loan-max-rate-max-term     | unit  | calc/payment | FR1      | 10000000, 25, 480 | payment 208343.82                                                               | S1, S2, S4 | boundary         |
+| payment-tiny-rate-0.01pct              | unit  | calc/payment | FR1      | 100000, 0.01, 120 | payment 833.75                                                                  | S1, S2, S4 | boundary (rate)  |
+| payment-one-month-term                 | unit  | calc/payment | FR1      | 5000, 6, 1        | payment 5025.00                                                                 | S1         | boundary (term)  |
+| payment-no-v1-maximum                  | unit  | calc/payment | FR1      | 20000000, 4, 240  | payment 121196.07 (the module does not enforce the V1 loan maximum)             | S1         | boundary         |
 
 ## Unit tests: `calc/payment.ts`, totals (FR2)
 

@@ -23,6 +23,10 @@ describe('validateInputs (FR3)', () => {
     expect(check(' 100000 ', ' 4', '20 ')).toEqual(ok(100000, 4, 240));
   });
 
+  it('validate-trims-tab-and-no-break-space', () => {
+    expect(check('\t100000\u00a0', '4', '20')).toEqual(ok(100000, 4, 240));
+  });
+
   it('validate-loan-empty', () => {
     expect(check('', '4', '20')).toEqual(fails({ loan: 'Enter a number' }));
   });
@@ -36,7 +40,23 @@ describe('validateInputs (FR3)', () => {
   });
 
   it('validate-rejects-non-decimal-syntax', () => {
-    const spellings = ['1e3', 'Infinity', 'NaN', '.5', '5.', '+5', '0x10', '1,000', '1.2.3'];
+    const spellings = [
+      '1e3',
+      'Infinity',
+      'NaN',
+      '.5',
+      '5.',
+      '+5',
+      '0x10',
+      '1,000',
+      '1.2.3',
+      '1 000',
+      '-',
+      '--5',
+      '- 5',
+      '１００',
+      '−5',
+    ];
     for (const spelling of spellings) {
       expect(check(spelling, '4', '20'), spelling).toEqual(fails({ loan: 'Enter a number' }));
     }
@@ -68,6 +88,13 @@ describe('validateInputs (FR3)', () => {
 
   it('validate-decimals-checked-before-range', () => {
     expect(check('100000', '25.001', '20')).toEqual(fails({ rate: 'Use at most 2 decimals' }));
+  });
+
+  it('validate-check-order-edge-cases', () => {
+    expect(check('100000', '-0.001', '20')).toEqual(fails({ rate: 'Use at most 2 decimals' }));
+    expect(check('100000', '4', '0.5')).toEqual(fails({ years: 'Term must be a whole number' }));
+    expect(check('-0', '4', '20')).toEqual(fails({ loan: LOAN_RANGE }));
+    expect(check('1' + '0'.repeat(400), '4', '20')).toEqual(fails({ loan: LOAN_RANGE }));
   });
 
   it('validate-term-fraction', () => {

@@ -55,6 +55,7 @@ cases = [
     ("above-v1-maximum-20m", "20000000", "4", 240),
     ("100k-4pct-25y", "100000", "4", 300),
     ("tie-positive-rate-one-month", "1000", "0.03", 1),
+    ("tie-positive-rate-float-hazard", "1000", "0.09", 1),
 ]
 
 print("== payment | total paid | total interest | raw interest | exact payment | balance after n months ==")

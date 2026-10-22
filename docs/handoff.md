@@ -7,10 +7,12 @@
 - Step 2: `src/calc/payment.ts` (`annuityPayment`, `calculateLoan`) with 30 tests (payment, totals, contract).
 - Step 3: `src/calc/validate.ts` (`validateInputs`, `LIMITS`) with 31 tests.
 - Step 4: 2 functional tests across validate, payment and format.
+- Round 2 review fixes: exact `BigInt` rounding of half-cent ties (commit `fix(calc)`), 11 more scenarios, docs 01 to 05 updated (95 scenarios).
+- Step 5: `src/ui/form.ts`, `src/main.ts`, `index.html`, `src/styles/main.css` with the 13 e2e tests (jsdom).
 
 ## Next
 
-- Step 5: `src/ui/form.ts`, `src/main.ts`, `index.html`, `src/styles/main.css` with the 11 e2e tests (jsdom).
+- Step 6: verification (test-name traceability check, real browser check, independent recompute, README, retro) and final push.
 
 ## Open questions
 

@@ -1,6 +1,6 @@
 # Mortgage calculator
 
-- The plan lives in `docs/v1/`.
-- Build only according to `docs/v1/05-plan.md`.
+- The plan lives in `docs/v2/` (V1 is in `docs/v1/` and is not edited).
+- Build only according to `docs/v2/05-plan.md`.
 - Write tests before implementation.
 - Commit after each step.

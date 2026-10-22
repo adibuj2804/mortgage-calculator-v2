@@ -20,7 +20,7 @@ function testFiles(dir: string): string[] {
 }
 
 const coded: string[] = [];
-for (const file of testFiles('src')) {
+for (const file of testFiles('frontend/src')) {
   for (const match of readFileSync(file, 'utf8').matchAll(/\bit\('([^']+)'/g)) {
     coded.push(match[1] as string);
   }

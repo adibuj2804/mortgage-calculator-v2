@@ -1,0 +1,21 @@
+{
+  "name": "calculate-422-empty-loan-and-rate-30",
+  "setup": {},
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/calculate",
+    "body": {
+      "loan": "",
+      "annual_rate_percent": "30",
+      "term_years": "20",
+      "extra_monthly_payment": ""
+    }
+  },
+  "status": 422,
+  "response": {
+    "errors": {
+      "loan": "Enter a number",
+      "annual_rate_percent": "Rate must be between 0 and 25 %"
+    }
+  }
+}

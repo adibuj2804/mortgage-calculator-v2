@@ -1,0 +1,466 @@
+{
+  "components": {
+    "schemas": {
+      "CalculateResponse": {
+        "properties": {
+          "extra_payment": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ExtraPaymentModel"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "input": {
+            "$ref": "#/components/schemas/InputModel"
+          },
+          "result": {
+            "$ref": "#/components/schemas/ResultModel"
+          },
+          "schedule": {
+            "$ref": "#/components/schemas/ScheduleModel"
+          }
+        },
+        "required": ["input", "result", "extra_payment", "schedule"],
+        "title": "CalculateResponse",
+        "type": "object"
+      },
+      "ErrorResponse": {
+        "properties": {
+          "error": {
+            "title": "Error",
+            "type": "string"
+          }
+        },
+        "required": ["error"],
+        "title": "ErrorResponse",
+        "type": "object"
+      },
+      "ErrorsResponse": {
+        "properties": {
+          "errors": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "Errors",
+            "type": "object"
+          }
+        },
+        "required": ["errors"],
+        "title": "ErrorsResponse",
+        "type": "object"
+      },
+      "ExtraPaymentModel": {
+        "properties": {
+          "interest_saved_cents": {
+            "title": "Interest Saved Cents",
+            "type": "integer"
+          },
+          "months_saved": {
+            "title": "Months Saved",
+            "type": "integer"
+          },
+          "months_to_payoff": {
+            "title": "Months To Payoff",
+            "type": "integer"
+          },
+          "total_interest_cents": {
+            "title": "Total Interest Cents",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "months_to_payoff",
+          "months_saved",
+          "total_interest_cents",
+          "interest_saved_cents"
+        ],
+        "title": "ExtraPaymentModel",
+        "type": "object"
+      },
+      "HealthResponse": {
+        "properties": {
+          "database": {
+            "title": "Database",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": ["status", "database"],
+        "title": "HealthResponse",
+        "type": "object"
+      },
+      "InputModel": {
+        "properties": {
+          "annual_rate_hundredths": {
+            "title": "Annual Rate Hundredths",
+            "type": "integer"
+          },
+          "extra_monthly_cents": {
+            "title": "Extra Monthly Cents",
+            "type": "integer"
+          },
+          "loan_cents": {
+            "title": "Loan Cents",
+            "type": "integer"
+          },
+          "term_months": {
+            "title": "Term Months",
+            "type": "integer"
+          }
+        },
+        "required": ["loan_cents", "annual_rate_hundredths", "term_months", "extra_monthly_cents"],
+        "title": "InputModel",
+        "type": "object"
+      },
+      "ListResponse": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/SavedCalculationModel"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": ["items"],
+        "title": "ListResponse",
+        "type": "object"
+      },
+      "ResultModel": {
+        "properties": {
+          "monthly_payment_cents": {
+            "title": "Monthly Payment Cents",
+            "type": "integer"
+          },
+          "total_interest_cents": {
+            "title": "Total Interest Cents",
+            "type": "integer"
+          },
+          "total_paid_cents": {
+            "title": "Total Paid Cents",
+            "type": "integer"
+          }
+        },
+        "required": ["monthly_payment_cents", "total_paid_cents", "total_interest_cents"],
+        "title": "ResultModel",
+        "type": "object"
+      },
+      "SavedCalculationModel": {
+        "properties": {
+          "created_at": {
+            "title": "Created At",
+            "type": "string"
+          },
+          "extra_payment": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ExtraPaymentModel"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "input": {
+            "$ref": "#/components/schemas/InputModel"
+          },
+          "result": {
+            "$ref": "#/components/schemas/ResultModel"
+          }
+        },
+        "required": ["id", "created_at", "input", "result", "extra_payment"],
+        "title": "SavedCalculationModel",
+        "type": "object"
+      },
+      "ScheduleModel": {
+        "properties": {
+          "extra_balance_by_year_cents": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "integer"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Extra Balance By Year Cents"
+          },
+          "total_interest_cents": {
+            "title": "Total Interest Cents",
+            "type": "integer"
+          },
+          "total_payments_cents": {
+            "title": "Total Payments Cents",
+            "type": "integer"
+          },
+          "yearly": {
+            "items": {
+              "$ref": "#/components/schemas/YearRowModel"
+            },
+            "title": "Yearly",
+            "type": "array"
+          }
+        },
+        "required": [
+          "yearly",
+          "total_payments_cents",
+          "total_interest_cents",
+          "extra_balance_by_year_cents"
+        ],
+        "title": "ScheduleModel",
+        "type": "object"
+      },
+      "YearRowModel": {
+        "properties": {
+          "end_balance_cents": {
+            "title": "End Balance Cents",
+            "type": "integer"
+          },
+          "interest_cents": {
+            "title": "Interest Cents",
+            "type": "integer"
+          },
+          "payments_cents": {
+            "title": "Payments Cents",
+            "type": "integer"
+          },
+          "principal_cents": {
+            "title": "Principal Cents",
+            "type": "integer"
+          },
+          "year": {
+            "title": "Year",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "year",
+          "payments_cents",
+          "interest_cents",
+          "principal_cents",
+          "end_balance_cents"
+        ],
+        "title": "YearRowModel",
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "title": "Mortgage calculator API",
+    "version": "1.0.0"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/api/v1/calculate": {
+      "post": {
+        "operationId": "calculate_api_v1_calculate_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "annual_rate_percent": {
+                    "title": "Annual Rate Percent",
+                    "type": "string"
+                  },
+                  "extra_monthly_payment": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "title": "Extra Monthly Payment"
+                  },
+                  "loan": {
+                    "title": "Loan",
+                    "type": "string"
+                  },
+                  "term_years": {
+                    "title": "Term Years",
+                    "type": "string"
+                  }
+                },
+                "required": ["loan", "annual_rate_percent", "term_years"],
+                "title": "CalculateRequest",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CalculateResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsResponse"
+                }
+              }
+            },
+            "description": "Invalid input"
+          }
+        },
+        "summary": "Calculate"
+      }
+    },
+    "/api/v1/calculations": {
+      "get": {
+        "operationId": "list_calculations_api_v1_calculations_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsResponse"
+                }
+              }
+            },
+            "description": "Invalid input"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "The database is unavailable"
+          }
+        },
+        "summary": "List Calculations"
+      },
+      "post": {
+        "operationId": "save_api_v1_calculations_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "annual_rate_percent": {
+                    "title": "Annual Rate Percent",
+                    "type": "string"
+                  },
+                  "client_id": {
+                    "title": "Client Id",
+                    "type": "string"
+                  },
+                  "extra_monthly_payment": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "title": "Extra Monthly Payment"
+                  },
+                  "loan": {
+                    "title": "Loan",
+                    "type": "string"
+                  },
+                  "term_years": {
+                    "title": "Term Years",
+                    "type": "string"
+                  }
+                },
+                "required": ["loan", "annual_rate_percent", "term_years", "client_id"],
+                "title": "SaveRequest",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SavedCalculationModel"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsResponse"
+                }
+              }
+            },
+            "description": "Invalid input"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "The database is unavailable"
+          }
+        },
+        "summary": "Save"
+      }
+    },
+    "/api/v1/health": {
+      "get": {
+        "operationId": "health_api_v1_health_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Health"
+      }
+    }
+  }
+}

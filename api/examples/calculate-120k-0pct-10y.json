@@ -1,0 +1,106 @@
+{
+  "name": "calculate-120k-0pct-10y",
+  "setup": {},
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/calculate",
+    "body": {
+      "loan": "120000",
+      "annual_rate_percent": "0",
+      "term_years": "10",
+      "extra_monthly_payment": ""
+    }
+  },
+  "status": 200,
+  "response": {
+    "input": {
+      "loan_cents": 12000000,
+      "annual_rate_hundredths": 0,
+      "term_months": 120,
+      "extra_monthly_cents": 0
+    },
+    "result": {
+      "monthly_payment_cents": 100000,
+      "total_paid_cents": 12000000,
+      "total_interest_cents": 0
+    },
+    "extra_payment": null,
+    "schedule": {
+      "yearly": [
+        {
+          "year": 1,
+          "payments_cents": 1200000,
+          "interest_cents": 0,
+          "principal_cents": 1200000,
+          "end_balance_cents": 10800000
+        },
+        {
+          "year": 2,
+          "payments_cents": 1200000,
+          "interest_cents": 0,
+          "principal_cents": 1200000,
+          "end_balance_cents": 9600000
+        },
+        {
+          "year": 3,
+          "payments_cents": 1200000,
+          "interest_cents": 0,
+          "principal_cents": 1200000,
+          "end_balance_cents": 8400000
+        },
+        {
+          "year": 4,
+          "payments_cents": 1200000,
+          "interest_cents": 0,
+          "principal_cents": 1200000,
+          "end_balance_cents": 7200000
+        },
+        {
+          "year": 5,
+          "payments_cents": 1200000,
+          "interest_cents": 0,
+          "principal_cents": 1200000,
+          "end_balance_cents": 6000000
+        },
+        {
+          "year": 6,
+          "payments_cents": 1200000,
+          "interest_cents": 0,
+          "principal_cents": 1200000,
+          "end_balance_cents": 4800000
+        },
+        {
+          "year": 7,
+          "payments_cents": 1200000,
+          "interest_cents": 0,
+          "principal_cents": 1200000,
+          "end_balance_cents": 3600000
+        },
+        {
+          "year": 8,
+          "payments_cents": 1200000,
+          "interest_cents": 0,
+          "principal_cents": 1200000,
+          "end_balance_cents": 2400000
+        },
+        {
+          "year": 9,
+          "payments_cents": 1200000,
+          "interest_cents": 0,
+          "principal_cents": 1200000,
+          "end_balance_cents": 1200000
+        },
+        {
+          "year": 10,
+          "payments_cents": 1200000,
+          "interest_cents": 0,
+          "principal_cents": 1200000,
+          "end_balance_cents": 0
+        }
+      ],
+      "total_payments_cents": 12000000,
+      "total_interest_cents": 0,
+      "extra_balance_by_year_cents": null
+    }
+  }
+}

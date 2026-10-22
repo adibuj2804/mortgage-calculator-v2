@@ -1,0 +1,17 @@
+{
+  "name": "calculate-422-missing-fields",
+  "setup": {},
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/calculate",
+    "body": {}
+  },
+  "status": 422,
+  "response": {
+    "errors": {
+      "loan": "Enter a number",
+      "annual_rate_percent": "Enter a number",
+      "term_years": "Enter a number"
+    }
+  }
+}

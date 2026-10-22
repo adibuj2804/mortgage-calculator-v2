@@ -1,0 +1,20 @@
+{
+  "name": "calculate-422-empty-loan",
+  "setup": {},
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/calculate",
+    "body": {
+      "loan": "",
+      "annual_rate_percent": "4",
+      "term_years": "20",
+      "extra_monthly_payment": ""
+    }
+  },
+  "status": 422,
+  "response": {
+    "errors": {
+      "loan": "Enter a number"
+    }
+  }
+}

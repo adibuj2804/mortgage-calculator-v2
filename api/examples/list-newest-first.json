@@ -1,0 +1,63 @@
+{
+  "name": "list-newest-first",
+  "setup": {
+    "saved": [
+      {
+        "loan": "100000",
+        "annual_rate_percent": "4",
+        "term_years": "20",
+        "extra_monthly_payment": "",
+        "client_id": "11111111-1111-4111-8111-111111111111"
+      },
+      {
+        "loan": "120000",
+        "annual_rate_percent": "0",
+        "term_years": "10",
+        "extra_monthly_payment": "",
+        "client_id": "11111111-1111-4111-8111-111111111111"
+      }
+    ]
+  },
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/calculations?client_id=11111111-1111-4111-8111-111111111111&limit=20",
+    "body": null
+  },
+  "status": 200,
+  "response": {
+    "items": [
+      {
+        "id": "00000000-0000-4000-8000-000000000002",
+        "created_at": "2026-01-01T00:00:02+00:00",
+        "input": {
+          "loan_cents": 12000000,
+          "annual_rate_hundredths": 0,
+          "term_months": 120,
+          "extra_monthly_cents": 0
+        },
+        "result": {
+          "monthly_payment_cents": 100000,
+          "total_paid_cents": 12000000,
+          "total_interest_cents": 0
+        },
+        "extra_payment": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000001",
+        "created_at": "2026-01-01T00:00:01+00:00",
+        "input": {
+          "loan_cents": 10000000,
+          "annual_rate_hundredths": 400,
+          "term_months": 240,
+          "extra_monthly_cents": 0
+        },
+        "result": {
+          "monthly_payment_cents": 60598,
+          "total_paid_cents": 14543520,
+          "total_interest_cents": 4543520
+        },
+        "extra_payment": null
+      }
+    ]
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "name": "calculate-422-extra-above-loan",
+  "setup": {},
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/calculate",
+    "body": {
+      "loan": "100000",
+      "annual_rate_percent": "4",
+      "term_years": "20",
+      "extra_monthly_payment": "100000.01"
+    }
+  },
+  "status": 422,
+  "response": {
+    "errors": {
+      "extra_monthly_payment": "Extra payment must be between 0 and the loan amount"
+    }
+  }
+}

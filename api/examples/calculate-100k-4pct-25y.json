@@ -1,0 +1,211 @@
+{
+  "name": "calculate-100k-4pct-25y",
+  "setup": {},
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/calculate",
+    "body": {
+      "loan": "100000",
+      "annual_rate_percent": "4",
+      "term_years": "25",
+      "extra_monthly_payment": ""
+    }
+  },
+  "status": 200,
+  "response": {
+    "input": {
+      "loan_cents": 10000000,
+      "annual_rate_hundredths": 400,
+      "term_months": 300,
+      "extra_monthly_cents": 0
+    },
+    "result": {
+      "monthly_payment_cents": 52784,
+      "total_paid_cents": 15835200,
+      "total_interest_cents": 5835200
+    },
+    "extra_payment": null,
+    "schedule": {
+      "yearly": [
+        {
+          "year": 1,
+          "payments_cents": 633408,
+          "interest_cents": 395672,
+          "principal_cents": 237736,
+          "end_balance_cents": 9762264
+        },
+        {
+          "year": 2,
+          "payments_cents": 633408,
+          "interest_cents": 385988,
+          "principal_cents": 247420,
+          "end_balance_cents": 9514844
+        },
+        {
+          "year": 3,
+          "payments_cents": 633408,
+          "interest_cents": 375908,
+          "principal_cents": 257500,
+          "end_balance_cents": 9257344
+        },
+        {
+          "year": 4,
+          "payments_cents": 633408,
+          "interest_cents": 365416,
+          "principal_cents": 267992,
+          "end_balance_cents": 8989352
+        },
+        {
+          "year": 5,
+          "payments_cents": 633408,
+          "interest_cents": 354499,
+          "principal_cents": 278909,
+          "end_balance_cents": 8710443
+        },
+        {
+          "year": 6,
+          "payments_cents": 633408,
+          "interest_cents": 343135,
+          "principal_cents": 290273,
+          "end_balance_cents": 8420170
+        },
+        {
+          "year": 7,
+          "payments_cents": 633408,
+          "interest_cents": 331309,
+          "principal_cents": 302099,
+          "end_balance_cents": 8118071
+        },
+        {
+          "year": 8,
+          "payments_cents": 633408,
+          "interest_cents": 318999,
+          "principal_cents": 314409,
+          "end_balance_cents": 7803662
+        },
+        {
+          "year": 9,
+          "payments_cents": 633408,
+          "interest_cents": 306189,
+          "principal_cents": 327219,
+          "end_balance_cents": 7476443
+        },
+        {
+          "year": 10,
+          "payments_cents": 633408,
+          "interest_cents": 292860,
+          "principal_cents": 340548,
+          "end_balance_cents": 7135895
+        },
+        {
+          "year": 11,
+          "payments_cents": 633408,
+          "interest_cents": 278986,
+          "principal_cents": 354422,
+          "end_balance_cents": 6781473
+        },
+        {
+          "year": 12,
+          "payments_cents": 633408,
+          "interest_cents": 264546,
+          "principal_cents": 368862,
+          "end_balance_cents": 6412611
+        },
+        {
+          "year": 13,
+          "payments_cents": 633408,
+          "interest_cents": 249516,
+          "principal_cents": 383892,
+          "end_balance_cents": 6028719
+        },
+        {
+          "year": 14,
+          "payments_cents": 633408,
+          "interest_cents": 233877,
+          "principal_cents": 399531,
+          "end_balance_cents": 5629188
+        },
+        {
+          "year": 15,
+          "payments_cents": 633408,
+          "interest_cents": 217601,
+          "principal_cents": 415807,
+          "end_balance_cents": 5213381
+        },
+        {
+          "year": 16,
+          "payments_cents": 633408,
+          "interest_cents": 200659,
+          "principal_cents": 432749,
+          "end_balance_cents": 4780632
+        },
+        {
+          "year": 17,
+          "payments_cents": 633408,
+          "interest_cents": 183028,
+          "principal_cents": 450380,
+          "end_balance_cents": 4330252
+        },
+        {
+          "year": 18,
+          "payments_cents": 633408,
+          "interest_cents": 164676,
+          "principal_cents": 468732,
+          "end_balance_cents": 3861520
+        },
+        {
+          "year": 19,
+          "payments_cents": 633408,
+          "interest_cents": 145582,
+          "principal_cents": 487826,
+          "end_balance_cents": 3373694
+        },
+        {
+          "year": 20,
+          "payments_cents": 633408,
+          "interest_cents": 125708,
+          "principal_cents": 507700,
+          "end_balance_cents": 2865994
+        },
+        {
+          "year": 21,
+          "payments_cents": 633408,
+          "interest_cents": 105022,
+          "principal_cents": 528386,
+          "end_balance_cents": 2337608
+        },
+        {
+          "year": 22,
+          "payments_cents": 633408,
+          "interest_cents": 83497,
+          "principal_cents": 549911,
+          "end_balance_cents": 1787697
+        },
+        {
+          "year": 23,
+          "payments_cents": 633408,
+          "interest_cents": 61091,
+          "principal_cents": 572317,
+          "end_balance_cents": 1215380
+        },
+        {
+          "year": 24,
+          "payments_cents": 633408,
+          "interest_cents": 37773,
+          "principal_cents": 595635,
+          "end_balance_cents": 619745
+        },
+        {
+          "year": 25,
+          "payments_cents": 633252,
+          "interest_cents": 13507,
+          "principal_cents": 619745,
+          "end_balance_cents": 0
+        }
+      ],
+      "total_payments_cents": 15835044,
+      "total_interest_cents": 5835044,
+      "extra_balance_by_year_cents": null
+    }
+  }
+}

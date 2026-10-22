@@ -1,0 +1,20 @@
+{
+  "name": "calculate-422-decimal-comma",
+  "setup": {},
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/calculate",
+    "body": {
+      "loan": "100000",
+      "annual_rate_percent": "3,75",
+      "term_years": "20",
+      "extra_monthly_payment": ""
+    }
+  },
+  "status": 422,
+  "response": {
+    "errors": {
+      "annual_rate_percent": "Enter a number"
+    }
+  }
+}

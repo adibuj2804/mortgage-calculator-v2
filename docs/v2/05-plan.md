@@ -62,7 +62,7 @@ Test names are exactly the names in `03-test-scenarios.md` and `docs/v1/03-test-
 - `npm run check` passes: formatting, lint for both languages, type check, tests, build and the scenario check.
 - `npm run dev` starts the backend and the frontend, and the README says how.
 - The calculator works with `STORAGE=supabase` and no key (database unavailable), and with `STORAGE=memory`.
-- `get_advisors` (Supabase, security) shows no warning for `calculations`, and the public key reads nothing from it.
+- `get_advisors` (Supabase, security) shows no warning for `calculations` (the informational notice "RLS enabled, no policy" is intended), and the public key reads nothing from it.
 - No secret in the git history or the working tree.
 
 ## 5. Build order

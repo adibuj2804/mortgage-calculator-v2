@@ -165,6 +165,7 @@ Base path `/api/v1`. JSON. Field names in `snake_case`. Money in whole cents. A 
 
 - A further check: the four extra result columns are either all null or all set.
 - Index on `(client_id, created_at desc)`. Row level security on, with no policies: the public key reads and writes nothing, only the backend with the secret key does.
+- The Supabase security advisors may show an informational notice "RLS enabled, no policy" for this table. It is intended.
 - The Supabase MCP connection is read-only and is used only to verify the table after the migration. The app never uses it.
 
 ## Repository layout

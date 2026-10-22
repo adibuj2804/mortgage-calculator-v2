@@ -9,6 +9,15 @@ versions follow [Semantic Versioning](https://semver.org/).
 ### Added
 
 - `AGENTS.md` / `CLAUDE.md` guide for AI coding agents.
+- Python backend (FastAPI) that does all calculations, an API contract (`api/`) with example files, and a
+  Supabase table for saved calculations.
+- Extra monthly payment, a yearly repayment schedule, a balance chart, saving and a saved list.
+
+### Changed
+
+- The web app moved to `frontend/` and no longer calculates or validates: it calls the API.
+- The calculation rules are ported to Python with exact integer arithmetic. The V1 numbers are unchanged
+  (checked by differential tests against the V1 TypeScript at tag `v1-final`).
 
 ## [2.0.0]
 

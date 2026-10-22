@@ -18,13 +18,13 @@
 ```
 
 Types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`.
-Scopes used here: `calc`, `ui`, `deps`.
+Scopes used here: `frontend`, `backend`, `api`, `supabase`, `calc`, `ui`, `deps`.
 
 ## Local checks
 
 ```bash
-npm ci
-npm run lint && npm run typecheck && npm test && npm run build
+npm ci && (cd backend && uv sync)
+npm run check
 ```
 
 A `pre-commit` hook formats and lints staged files automatically.

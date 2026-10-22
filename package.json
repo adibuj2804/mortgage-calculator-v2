@@ -11,18 +11,28 @@
     "dev": "npm run dev --workspace frontend --",
     "build": "npm run build --workspace frontend",
     "preview": "npm run preview --workspace frontend --",
-    "test": "npm run test --workspace frontend",
+    "test": "npm run test:frontend && npm run test:backend",
     "test:watch": "npm run test:watch --workspace frontend",
     "typecheck": "npm run typecheck --workspace frontend",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "prepare": "husky",
-    "check:scenarios": "node scripts/check-scenarios.ts"
+    "check:scenarios": "node scripts/check-scenarios.ts",
+    "test:frontend": "npm run test --workspace frontend",
+    "test:backend": "cd backend && uv run pytest",
+    "lint:backend": "cd backend && uv run ruff check .",
+    "format:backend": "cd backend && uv run ruff format .",
+    "format:backend:check": "cd backend && uv run ruff format --check .",
+    "check": "npm run format:check && npm run format:backend:check && npm run lint && npm run lint:backend && npm run typecheck && npm test && npm run build && npm run check:scenarios"
   },
   "lint-staged": {
     "*.{ts,js,mjs,json,css,html,md,yml}": "prettier --write",
-    "*.ts": "eslint --fix"
+    "*.ts": "eslint --fix",
+    "backend/**/*.py": [
+      "uv run --project backend ruff check --fix",
+      "uv run --project backend ruff format"
+    ]
   },
   "devDependencies": {
     "@commitlint/cli": "^21.2.3",

@@ -2,17 +2,28 @@
 
 ## Done
 
-- Part A: `docs/v1/01` to `05` written, reviewed by an independent subagent (two rounds), plan committed before any V1 code.
-- Part B: V1 built test-first in the order of `docs/v1/05-plan.md`: format, payment, validate, functional tests, form. 95 of 95 scenarios are tests (`npm run check:scenarios`).
-- Review round 2 fixes: exact `BigInt` rounding of half-cent ties, 12 more scenarios.
-- Step 6: real-browser check, independent differential check (312 inputs, 0 mismatches), README, `06-retro.md`, `prompts.md`.
-- Old out-of-scope code is kept on branch `archive/pink-redesign`.
+- **V1** (the first version, one page in the browser): `docs/v1/`, tag `v1-final`. Not edited.
+- **V2 documents:** `docs/v2/01` to `06` and `prompts.md`, two independent review rounds, reference scripts.
+- **V2 build**, one local commit per step, in this order: `frontend/` move, Python project, payment and validation
+  port with two differential tests, repayment schedule and extra payment, API contract and endpoints, frontend
+  switch (client, schedule table, balance chart, saving, saved list), Supabase repository and migration file,
+  documentation.
+- **Checks:** `npm run check` passes. 264 scenarios documented, 264 coded. Frontend 81 tests, backend 183 tests
+  (1 opt-in integration test skipped). An independent subagent compared 308 API replies with 0 mismatches.
+- **Real browser:** frontend plus backend worked (calculate, extra payment, schedule, chart, save, saved list after reload).
 
 ## Next
 
-- The student reads `docs/v1/` and owns it (the content was drafted by Claude from one delegating prompt, see `prompts.md`).
-- Lesson 5: change the architecture to Frontend (JavaScript), API, Backend (Python) and Supabase. The calculation in `src/calc/payment.ts` is pure and takes plain data, so it can move behind an API. The Supabase project exists and is restored.
+1. **Database (needs the owner).** In the Supabase SQL editor run `supabase/migrations/20261022000000_create_calculations.sql`.
+   Put the secret key into `backend/.env` (`cp backend/.env.example backend/.env`, never paste the key in chat).
+   Then Claude Code checks: `list_tables`, security advisors, `RUN_INTEGRATION=1 npm run test:backend`, one save from the browser.
+   At the last check neither the file nor the table existed.
+2. **Push.** Nothing is pushed yet (the owner wanted to see the result first). Push `main` and the tag `v1-final`
+   together: the backend CI job runs the differential tests, which read that tag. The first CI run of the new
+   `backend` job happens then.
+3. The owner reads `docs/v2/`. The content must be theirs.
 
 ## Open questions
 
-- Teacher access: the repository is public, so the link is enough. Switch to private and add the teacher as a collaborator only if required.
+- Is the database step still wanted for the first push, or push first and add Supabase after? The calculator works
+  without it (saving and the saved list then say they are unavailable).

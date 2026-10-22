@@ -25,6 +25,7 @@ Everything here serves the requirements FR1 to FR4 in `01-functional.md`. Nothin
   - `type LoanInput = { loan: number; annualRatePercent: number; years: number }`
   - `type LoanResult = { months: number; monthlyPayment: number; totalPaid: number; totalInterest: number }`
   - `calculateLoan(input: LoanInput): LoanResult` (all money values are euros rounded to cents)
+  - It throws a `RangeError` when called with a loan of 0 or less, a negative rate or a term below 1. The UI never reaches this because of module 2. It protects future callers such as an API.
 - **Realizes:** FR1, FR2.
 - **Depends on:** nothing.
 

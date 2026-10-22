@@ -70,7 +70,7 @@ export function renderChart(svg: SVGElement, standard: number[], extra?: number[
     group,
     axisLabel('Year 0', PLOT.left, bottom + 22, 'start'),
     axisLabel(`Year ${standard.length - 1}`, PLOT.left + PLOT.width, bottom + 22, 'end'),
-    axisLabel(formatCents(max), PLOT.left - 6, PLOT.top + 10, 'end'),
-    axisLabel('0.00 €', PLOT.left - 6, bottom, 'end'),
+    axisLabel(formatCents(max), PLOT.left + PLOT.width - 6, PLOT.top + 16, 'end'),
+    axisLabel('0.00 €', PLOT.left + 6, bottom - 6, 'start'),
   );
 }

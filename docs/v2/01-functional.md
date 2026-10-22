@@ -86,7 +86,7 @@ FR1 to FR5 of `docs/v1/01-functional.md` stay exactly as they are: the same inpu
 ### FR12: Balance chart
 
 - **Inputs:** a valid calculation (FR1), and if there is an extra payment result (FR6), that too.
-- **Output:** a line chart "Remaining balance by year". The line starts at the loan amount at year 0 and shows the balance at the end of each year of the schedule. With an extra payment, a second line shows the balance of the extra payment scenario. The chart has axis labels: `Year 0` and `Year N` (N is the number of years in the schedule) under the line, and the loan amount and `0.00 €` beside it.
+- **Output:** a line chart "Remaining balance by year". The line starts at the loan amount at year 0 and shows the balance at the end of each year of the schedule. With an extra payment, a second line shows the balance of the extra payment scenario. The chart has axis labels: `Year 0` and `Year N` (N is the number of years in the schedule) under the plot, the loan amount in the top right corner of the plot and `0.00 €` in its bottom left corner (the lines never pass through these two corners).
 - **Rules:** the values come from the same calculation as the table (FR11 for the first line, FR6 for the second). The second line ends at 0 earlier than the first.
 - **Example:** 100,000 €, 4 %, 20 years: 21 points, from 100,000.00 € at year 0 to 0.00 € at year 20. With an extra payment of 200 €, the second line has 15 points and reaches 0.00 € at year 14.
 

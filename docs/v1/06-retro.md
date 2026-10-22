@@ -21,6 +21,8 @@ Result: V1 is built as planned, with 95 of 95 scenarios as passing tests, a clea
 
 Things that were my own slips during the build and are worth knowing:
 
+- **CI was red on the commits of steps 1 to 4.** I removed `src/main.ts` in step 1 while `index.html` still imported it, so `npm run build` failed on GitHub until step 5 (`feat(ui)`, then green again). The plan said "build is checked in step 6" and did not say that the build would be broken in between. For V2 the plan must keep every step green, for example by keeping a stub entry point.
+
 - The review of round 2 was started in parallel with step 1. It finished while steps 1 to 4 were already committed, so two findings (ties above 0 %, more format and contract tests) were applied after code existed. The order was still plan first: docs commit `d1099ad`, then code fix `f8cddfa`. The better order is to wait for the review.
 - My first plan-clarification commit accidentally contained the deletion of the old code (it was staged already). I caught it before pushing and split it with a soft reset.
 - The commit-msg hook rejected a message with a body line over 100 characters. That is the hook doing its job.
@@ -65,5 +67,5 @@ E1 (build without a plan for 20 minutes), E3 (a module without tests first) and 
 2. Wait for the independent review to finish before starting the build.
 3. Put the DOM contract and the rounding rules into the first draft of the architecture and the spec. Both were found by the review, not by the author.
 4. Ask the reviewer explicitly to search for rounding ties by script. The two tie findings came from scripts, not from reading.
-5. Run the differential check (random inputs against an independent implementation) in the plan, not at the end, and keep `check:scenarios` in the step 1 checklist.
+5. Keep CI green at every step (see section 2), and run the differential check (random inputs against an independent implementation) in the plan, not at the end, and keep `check:scenarios` in the step 1 checklist.
 6. Write the prompts as separate, student-written prompts per layer, and record each one in `prompts.md` at the time. In this run `prompts.md` records one delegating prompt and the questions asked, which is honest but thin.

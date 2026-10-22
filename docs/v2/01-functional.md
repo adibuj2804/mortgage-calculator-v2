@@ -13,6 +13,7 @@ FR1 to FR5 of `docs/v1/01-functional.md` stay exactly as they are: the same inpu
 - The calculation and the validation now happen on a server, not in the page. The page shows the messages it receives.
 - Field names in messages and requests follow the API: `loan`, `annual_rate_percent`, `term_years`, `extra_monthly_payment`.
 - FR5 now covers four fields: editing the extra payment field hides the result like editing any other field.
+- "Whitespace" in FR3 and FR6 is exactly what JavaScript's `trim` removes: spaces, tabs, line breaks, the no-break space, the other Unicode space characters (U+1680, U+2000 to U+200A, U+2028, U+2029, U+202F, U+205F, U+3000) and the byte order mark (U+FEFF). The control characters U+001C to U+001F and U+0085 are not whitespace. Leading zeros do not count as digits when the size of a number is checked, so `0000000000000000000001000` is the number 1000.
 
 ## New functional requirements
 
@@ -38,7 +39,7 @@ FR1 to FR5 of `docs/v1/01-functional.md` stay exactly as they are: the same inpu
   - What is stored: the inputs, the V1 result and the extra payment result (if any), a creation time, and a random identifier of this browser (the "client id"). Nothing else: no name, no e-mail, no address. The schedule is not stored.
   - The saved result is calculated again on the server from the inputs. The page never sends a result to be stored.
   - Saving never happens automatically.
-  - While a save is running the button is disabled and reads `Saving…`, so a double click saves once.
+  - While a save is running the button is disabled and reads `Saving…`, so a double click saves once. After `Saved.` the button stays disabled and reads `Saved` until there is a new result, so the same result is not saved twice. After a failure the button is enabled again, so the user can retry. A save whose reply was lost on the way can create a second saved item on retry. V2 does not prevent that.
   - If saving fails for any reason (the database or the server cannot be reached, or the server refuses the request) the message is `Could not save right now. Your result is still here.`
   - The message `Saved.` or the failure message is cleared when the user edits a field and when the next calculation starts.
 - **Example:** after calculating 100,000 €, 4 %, 20 years, pressing "Save this calculation" shows `Saved.` and the item appears at the top of the saved list.
@@ -67,7 +68,7 @@ FR1 to FR5 of `docs/v1/01-functional.md` stay exactly as they are: the same inpu
 
 - **Inputs:** the user presses "Calculate" (or Enter) while a calculation request is still running, or edits a field while a request is running.
 - **Output:** while a calculation request is running the button is disabled and reads `Calculating…`. A second submit (button or Enter) is ignored. The button becomes enabled again when that request ends, whatever the outcome. A reply that arrives after the user edited a field is ignored: no result and no messages from it are shown.
-- **Rules:** FR5 still holds. A shown result always belongs to the values currently in the fields. A save reply that arrives after an edit does not change the save message (it was cleared by the edit), but the saved list is still refreshed, because the item was saved.
+- **Rules:** FR5 still holds. A shown result always belongs to the values currently in the fields. When a calculation request starts, the previous result is hidden, so a failed request never leaves an old result on screen. A save reply that arrives after an edit does not change the save message (it was cleared by the edit), but the saved list is still refreshed, because the item was saved.
 - **Example:** the user presses Calculate, edits the term, and then the reply arrives. The screen shows no result.
 
 ### FR11: Repayment schedule

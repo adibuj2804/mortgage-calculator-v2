@@ -94,3 +94,25 @@
 
 **Výsledok:** 15 findings accepted, 1 partly accepted, 1 rejected. Checking the reviewer's suggested tie value found that 999.90 € is below the 1,000 € minimum, so a different value was used. Checking my own new reference values with the script found a typo (527.89 instead of 527.84).
 **Zmeny promptu:** none (first attempt).
+
+## Step 4b – Independent review, round 2 (new subagent, clean context)
+
+**Prompt (verbatim):** the same as in Step 4 (with the absolute paths to 01, 02, 03), with two additions: in item 5 "Apply the rounding and totals rules exactly as the plan states them." and at the end "Keep the report under 900 words."
+
+**Výsledok:** no blockers, 5 major and 7 minor findings, all 27 reference values correct. The one real find: a half-cent tie also occurs above 0 % (1,000 €, 0.03 %, 1 month), so the payment is now rounded with exact `BigInt` arithmetic. Details in `04-review.md`.
+**Zmeny promptu:** the two additions above. "Apply the rules exactly as stated" was added because round 1 had spent effort on the rules themselves; "under 900 words" because the round 1 report was very long.
+
+## Step 6 – Experiment E4 (a session that sees only the plan)
+
+**Prompt (verbatim):**
+
+> Read only this file (absolute path): /Users/adibuj/Desktop/upjs/claudeCode/mortgage-calculator/docs/v1/05-plan.md. Do not read any other file anywhere. Do not run any command. Without writing code, explain what you would build first and how you would know you are done. Also list anything the plan does not tell you that you would need before you could start. Keep the answer under 300 words.
+
+**Výsledok:** see `06-retro.md`.
+**Zmeny promptu:** the sentence "list anything the plan does not tell you" was added to the assignment's prompt to find gaps, not only to test the understanding.
+
+## Step 7 – Build, steps 1 to 6 of `05-plan.md` (executed by Claude)
+
+**Prompt:** none per step. The build followed `docs/v1/05-plan.md` and the project `CLAUDE.md` (tests first, one commit per step). Test-first was kept by running the new tests and seeing them fail before each implementation.
+**Výsledok:** see the git log and `06-retro.md`.
+**Zmeny promptu:** none.

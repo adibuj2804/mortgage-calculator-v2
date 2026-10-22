@@ -14,7 +14,7 @@ A user enters a loan amount, an annual interest rate and a term in years. They g
   - It is an annuity: the same payment every month, paid at the end of each month.
   - The payment is rounded to cents, half up (an exact half cent rounds up: 83.325 becomes 83.33).
   - If the rate is 0 %, the payment is loan amount ÷ number of months, rounded to cents.
-- **Example:** 100,000 €, 4 %, 20 years gives a payment of **605.98 €**. For 200,000 €, 3.5 %, 30 years the payment is **898.09 €**. For 120,000 €, 0 %, 10 years it is **1,000.00 €**. For 1,000.14 €, 0 %, 1 year the exact payment is 83.345, so it is **83.35 €** (half up).
+- **Example:** 100,000 €, 4 %, 20 years gives a payment of **605.98 €**. For 200,000 €, 3.5 %, 30 years the payment is **898.09 €**. For 120,000 €, 0 %, 10 years it is **1,000.00 €**. For 1,000.14 €, 0 %, 1 year the exact payment is 83.345, so it is **83.35 €** (half up). For 1,000 €, 0.03 %, 1 month the exact payment is 1,000.025, so it is **1,000.03 €**.
 
 ### FR2: Show total paid and total interest
 
@@ -30,10 +30,11 @@ A user enters a loan amount, an annual interest rate and a term in years. They g
 - **Inputs:** the three fields as typed.
 - **Output:** a message next to each invalid field, and no result.
 - **Rules (checked in this order, the first failing check gives the message):**
-  1. **Syntax.** Leading and trailing spaces are ignored. What remains must be ASCII digits with an optional minus sign at the start and an optional decimal part after a dot (`100000`, `3.75`, `-5`, `007`). Anything else shows "Enter a number": empty, spaces only, letters, `1e3`, `Infinity`, `NaN`, `.5`, `5.`, `+5`, `0x10`, `1,000`, `3,75`, `1.2.3`. The text `-0` is read as 0.
+  1. **Syntax.** Leading and trailing whitespace is ignored (spaces, tabs, line breaks and the no-break space). What remains must be ASCII digits with an optional minus sign at the start and an optional decimal part after a dot (`100000`, `3.75`, `-5`, `007`). Anything else shows "Enter a number": empty, spaces only, letters, `1e3`, `Infinity`, `NaN`, `.5`, `5.`, `+5`, `0x10`, `1,000`, `1 000`, `3,75`, `1.2.3`, a lone `-`, `--5`, `- 5`, and non-ASCII digits or a Unicode minus. The text `-0` is read as 0.
   2. **Decimals.** Loan amount and rate may have at most 2 decimals, otherwise "Use at most 2 decimals" (`1000.005`, `4.005`). Trailing zeros do not count (`1000.500` is fine). The term must be a whole number, otherwise "Term must be a whole number" (`20.5`). The text `20.0` is the whole number 20.
   3. **Range.** A value outside the limits shows the allowed range: "Loan amount must be between 1,000 and 10,000,000 €", "Rate must be between 0 and 25 %", "Term must be between 1 and 40 years".
-  - Each invalid field shows its own message. A message stays until "Calculate" is pressed again.
+  - Messages use a regular space before `%` and `€`. A number with hundreds of digits is a number, so it gets the range message.
+  - Each invalid field shows its own message. A message stays until "Calculate" is pressed again, even when a field is edited in between (editing only hides the result, see FR5).
   - If the inputs are invalid when "Calculate" is pressed after a result was shown, the result is cleared.
 - **Example:** loan amount empty, rate 30, term 20 shows "Enter a number" under loan amount and "Rate must be between 0 and 25 %" under rate. No result is shown. A rate of `25.001` shows "Use at most 2 decimals", not the range message.
 
@@ -41,7 +42,7 @@ A user enters a loan amount, an annual interest rate and a term in years. They g
 
 - **Inputs:** the calculated results.
 - **Output:** amounts in euros with a comma as thousands separator, a dot before 2 decimals, and the € sign after one regular space (U+0020).
-- **Rules:** the currency is € only, and there is no selector. Amounts are always shown with exactly 2 decimals.
+- **Rules:** the currency is € only, and there is no selector. Amounts are always shown with exactly 2 decimals. The amounts given to the display are already whole cents. Any extra precision is rounded half up to the cent (0.005 is shown as `0.01 €`, 0.004 as `0.00 €`, 999.999 as `1,000.00 €`).
 - **Example:** `145,435.20 €`, `605.98 €`, `0.00 €`.
 
 ### FR5: Keep the result in step with the inputs

@@ -1,7 +1,8 @@
 """Independent reference values for docs/v1/03-test-scenarios.md.
 
 Run: python3 docs/v1/reference-values.py
-Uses Decimal (60 digits) and exact Fractions. It shares no code with the app.
+Uses exact rational arithmetic (fractions.Fraction): no floating point, no rounding until the
+final cent. It shares no code with the app.
 
 Rules implemented (docs/v1/01-functional.md):
   payment      = annuity payment, rounded half up to cents (payments at month end)
@@ -9,35 +10,34 @@ Rules implemented (docs/v1/01-functional.md):
   rate  > 0    -> total interest = max(0, rounded payment * months - loan)
                   total paid     = loan + total interest
 """
-from decimal import Decimal as D, getcontext, ROUND_HALF_UP
-from fractions import Fraction
-
-getcontext().prec = 60
-CENT = D("0.01")
+import math
+from fractions import Fraction as F
 
 
-def round_half_up(x):
-    return D(x).quantize(CENT, rounding=ROUND_HALF_UP)
+def half_up(x):
+    """Round an exact euro amount half up to cents."""
+    return F(math.floor(x * 100 + F(1, 2)), 100)
 
 
 def reference(loan, rate, months):
-    L, n = D(loan), months
-    r = D(rate) / 12 / 100
+    L, n = F(loan), months
+    r = F(rate) / 1200
+    exact = L / n if r == 0 else L * r * (1 + r) ** n / ((1 + r) ** n - 1)
+    pay = half_up(exact)
+    raw = pay * n - L
     if r == 0:
-        exact = L / n
+        total, interest = L, F(0)
     else:
-        exact = L * r / (1 - (1 + r) ** (-n))
-    pay = round_half_up(exact)
-    raw_interest = pay * n - L
-    if r == 0:
-        total, interest = L, D("0.00")
-    else:
-        interest = max(D("0.00"), raw_interest)
+        interest = max(F(0), raw)
         total = L + interest
     bal = L
     for _ in range(n):
         bal = bal * (1 + r) - exact
-    return exact, pay, total, interest, raw_interest, bal
+    return exact, pay, total, interest, raw, bal
+
+
+def money(x):
+    return f"{float(x):.2f}"
 
 
 cases = [
@@ -54,28 +54,26 @@ cases = [
     ("clamped-1013-0.01pct-40y", "1013", "0.01", 480),
     ("above-v1-maximum-20m", "20000000", "4", 240),
     ("100k-4pct-25y", "100000", "4", 300),
+    ("tie-positive-rate-one-month", "1000", "0.03", 1),
 ]
 
-print("== cases: exact payment | payment | total paid | total interest | raw interest | end balance ==")
+print("== payment | total paid | total interest | raw interest | exact payment | balance after n months ==")
 for name, loan, rate, months in cases:
     exact, pay, total, interest, raw, bal = reference(loan, rate, months)
-    print(f"{name}: loan={loan} rate={rate} months={months} exact={exact:.10f} "
-          f"payment={pay} total={total} interest={interest} raw_interest={raw} balance={bal:.8f}")
+    print(f"{name}: loan={loan} rate={rate} months={months} payment={money(pay)} "
+          f"total={money(total)} interest={money(interest)} raw_interest={money(raw)} "
+          f"exact={float(exact):.10f} balance_is_zero={bal == 0}")
 
-print("\n== exact tie cases (Fraction), payment at 0 % ==")
-for name, loan, months in [("tie-half-up-vs-even", "1000.14", 12), ("tie-float-hazard", "1000.02", 12), ("tie-41.675", "1000.20", 24)]:
-    q = Fraction(loan) / months
-    cents = q * 100
-    print(f"{name}: loan={loan} months={months} exact={float(q)!r} cents={cents} "
-          f"half_up={round_half_up(D(q.numerator) / D(q.denominator))} "
-          f"tie={cents.denominator == 2}")
+print("\n== exact tie cases at 0 % ==")
+for name, loan, months in [
+    ("tie-half-up-vs-even", "1000.14", 12),
+    ("tie-float-hazard", "1000.02", 12),
+    ("tie-41.675", "1000.20", 24),
+]:
+    q = F(loan) / months
+    print(f"{name}: loan={loan} months={months} exact={float(q)!r} cents={q * 100} "
+          f"half_up={money(half_up(q))} is_tie={(q * 100).denominator == 2}")
 
-print("\n== search: smallest-loan rate>0 cases whose raw interest is negative (clamped) ==")
-found = 0
-for rate in ["0.01", "0.05", "0.1"]:
-    for loan in ["1000", "1001", "1500", "2000"]:
-        for months in (12, 24, 60, 120, 480):
-            exact, pay, total, interest, raw, bal = reference(loan, rate, months)
-            if raw < 0 and found < 6:
-                found += 1
-                print(f"loan={loan} rate={rate} months={months} payment={pay} raw_interest={raw} -> shown interest={interest} total={total}")
+print("\n== rounding of the display format ==")
+for amount in ["0.005", "0.004", "999.999"]:
+    print(f"{amount} -> {money(half_up(F(amount)))}")

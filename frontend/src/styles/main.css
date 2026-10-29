@@ -1,30 +1,31 @@
+/* Pink theme. Every colour in this file comes from these tokens. */
 :root {
-  --bg: #edf2f4;
+  --bg: #fff3f7;
   --surface: #ffffff;
-  --ink: #16222a;
-  --muted: #5b6b76;
-  --line: #d5dde2;
-  --accent: #0d7a6f;
+  --ink: #3a1626;
+  --muted: #7a4a60;
+  --line: #f3cfdd;
+  --accent: #c8296a;
   --accent-ink: #ffffff;
-  --accent-soft: #dcf0ec;
+  --accent-soft: #fde0ea;
   --danger: #b42318;
-  --focus: #2563eb;
-  --shadow: 0 1px 2px rgb(22 34 42 / 6%), 0 10px 28px rgb(22 34 42 / 7%);
+  --focus: #7a3fd1;
+  --shadow: 0 1px 2px rgb(200 41 106 / 8%), 0 10px 28px rgb(200 41 106 / 10%);
   color-scheme: light;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #0e1920;
-    --surface: #15242c;
-    --ink: #e7eff3;
-    --muted: #94a6b1;
-    --line: #29404b;
-    --accent: #3cc2b0;
-    --accent-ink: #062a26;
-    --accent-soft: #123a3a;
-    --danger: #ff8f7e;
-    --focus: #7db0ff;
+    --bg: #1c0f17;
+    --surface: #281520;
+    --ink: #fbe9f1;
+    --muted: #d2a5bb;
+    --line: #432333;
+    --accent: #ff7aa8;
+    --accent-ink: #2a0f1b;
+    --accent-soft: #4a2236;
+    --danger: #ff8f9e;
+    --focus: #b995f0;
     --shadow: 0 1px 2px rgb(0 0 0 / 30%), 0 10px 28px rgb(0 0 0 / 35%);
     color-scheme: dark;
   }

@@ -15,6 +15,9 @@ versions follow [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- The frontend uses a pink theme (light and dark). Only the colour tokens in `frontend/src/styles/main.css` changed.
+- Dependency updates merged: ESLint, Prettier, typescript-eslint, Vite and the GitHub Actions versions.
+  TypeScript 7 is not adopted yet because typescript-eslint does not support it.
 - The web app moved to `frontend/` and no longer calculates or validates: it calls the API.
 - The calculation rules are ported to Python with exact integer arithmetic. The V1 numbers are unchanged
   (checked by differential tests against the V1 TypeScript at tag `v1-final`).

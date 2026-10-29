@@ -12,6 +12,8 @@ versions follow [Semantic Versioning](https://semver.org/).
 - Python backend (FastAPI) that does all calculations, an API contract (`api/`) with example files, and a
   Supabase table for saved calculations.
 - Extra monthly payment, a yearly repayment schedule, a balance chart, saving and a saved list.
+- A more appealing balance chart: filled areas, gridlines, end markers, a draw-in animation, a legend and a
+  hover / arrow-key readout of the balance for each year.
 
 ### Changed
 

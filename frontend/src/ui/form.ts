@@ -65,7 +65,12 @@ const TEMPLATE = `
     </div>
     <section id="schedule" class="schedule">
       <h3>Repayment schedule</h3>
-      <svg id="balance-chart" viewBox="0 0 640 260" role="img" aria-labelledby="balance-chart-title"></svg>
+      <svg id="balance-chart" viewBox="0 0 640 284" role="img" aria-labelledby="balance-chart-title"></svg>
+      <ul class="chart-legend">
+        <li><span class="swatch swatch--standard"></span>Standard payments</li>
+        <li id="chart-legend-extra" hidden><span class="swatch swatch--extra"></span>With extra payment</li>
+      </ul>
+      <p class="chart-hint">Hover or use the arrow keys on the chart to read the balance for each year.</p>
       <div class="table-wrap">
         <table id="schedule-table">
           <thead><tr><th>Year</th><th>Paid</th><th>Interest</th><th>Principal</th><th>Balance</th></tr></thead>
@@ -162,6 +167,7 @@ export function mountCalculator(root: HTMLElement, api: ApiClient, clientId: str
 
     renderSchedule(byId(root, 'schedule-body'), byId(root, 'schedule-total'), schedule);
     setText('schedule-note', SCHEDULE_NOTE);
+    byId(root, 'chart-legend-extra').hidden = schedule.extra_balance_by_year_cents === null;
     renderChart(
       byId<SVGElement>(root, 'balance-chart'),
       [input.loan_cents, ...schedule.yearly.map((year) => year.end_balance_cents)],

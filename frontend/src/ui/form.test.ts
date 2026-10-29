@@ -481,6 +481,45 @@ describe('repayment schedule and balance chart (FR11, FR12)', () => {
     await calculate();
     expect(line('extra')).toBeNull();
   });
+
+  it('form-chart-has-area-and-grid', async () => {
+    await calculate();
+    const chart = $('balance-chart');
+
+    expect(chart.querySelectorAll('polygon.area--standard')).toHaveLength(1);
+    expect(chart.querySelector('polygon.area--extra')).toBeNull();
+    expect(chart.querySelectorAll('line.grid')).toHaveLength(3);
+  });
+
+  it('form-chart-legend-shows-extra-only-with-extra', async () => {
+    await calculate();
+    expect($('chart-legend-extra').hidden).toBe(true);
+
+    fill('100000', '4', '20', '200');
+    press();
+    await settle();
+    expect($('chart-legend-extra').hidden).toBe(false);
+  });
+
+  const key = (name: string) =>
+    $('balance-chart').dispatchEvent(new KeyboardEvent('keydown', { key: name, bubbles: true }));
+  const readout = () => document.querySelector('#balance-chart text.readout')?.textContent;
+
+  it('form-chart-keyboard-shows-readout', async () => {
+    await calculate();
+    key('ArrowRight');
+    expect(readout()).toBe('Year 1: 96,667.58 €');
+    key('End');
+    expect(readout()).toBe('Year 20: 0.00 €');
+    key('Home');
+    expect(readout()).toBe('Year 0: 100,000.00 €');
+  });
+
+  it('form-chart-readout-shows-extra-line', async () => {
+    await calculate('200');
+    key('End');
+    expect(readout()).toBe('Year 20: 0.00 € · with extra 0.00 €');
+  });
 });
 
 describe('saving (FR7)', () => {
